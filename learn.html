@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Logic Gates</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Example of a more modern and readable font */
+        }
+        .font-study {
+            font-family: 'Georgia', serif; /* Example of a serif font for a different feel */
+        }
+        .font-technical {
+            font-family: 'Consolas', monospace; /* Example of a monospace font */
+        }
+    </style>
+</head>
+
+<body class="bg-blue-50 min-h-screen flex flex-col font-sans">
+    <nav class="bg-blue-700 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">LOGIC GATE </h1>
+            <div class="flex gap-6">
+                <a href="login.html" class="hover:text-blue-200 transition duration-200">Login</a>
+                <a href="logic.html" class="hover:text-blue-200 transition duration-200">Circuit Builder</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-8">
+        <h1 class="text-3xl font-bold mb-8 text-center text-blue-800">LOGIC GATES</h1>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
+            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">AND Gate</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <p class="mb-4 text-blue-600">The <span class="font-semibold">AND gate</span> outputs a "1" (HIGH) only when <span class="font-semibold">all</span> its inputs are "1" (HIGH). If any input is "0" (LOW), the output is "0" (LOW).</p>
+                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
+                    <table class="w-full border-collapse border border-blue-300">
+                        <thead class="bg-blue-100">
+                            <tr>
+                                <th class="border px-4 py-2 text-blue-700">Input A</th>
+                                <th class="border px-4 py-2 text-blue-700">Input B</th>
+                                <th class="border px-4 py-2 text-blue-700">Output</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-center">
+                    <img src="images/and gate.png" alt="AND Gate Symbol" class="max-w-xs rounded-md shadow-sm border border-blue-200">
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
+            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">OR Gate</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <p class="mb-4 text-blue-600">The <span class="font-semibold">OR gate</span> outputs a "1" (HIGH) if <span class="font-semibold">at least one</span> of its inputs is "1" (HIGH). It outputs "0" (LOW) only when <span class="font-semibold">all</span> inputs are "0" (LOW).</p>
+                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
+                    <table class="w-full border-collapse border border-blue-300">
+                        <thead class="bg-blue-100">
+                            <tr>
+                                <th class="border px-4 py-2 text-blue-700">Input A</th>
+                                <th class="border px-4 py-2 text-blue-700">Input B</th>
+                                <th class="border px-4 py-2 text-blue-700">Output</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-center">
+                    <img src="images/or gate.png" alt="OR Gate Symbol" class="max-w-xs rounded-md shadow-sm border border-blue-200">
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
+            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">NOT Gate</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <p class="mb-4 text-blue-600">The <span class="font-semibold">NOT gate</span>, also known as an <span class="font-semibold">inverter</span>, has only one input. It outputs the <span class="font-semibold">opposite</span> of its input. If the input is "1" (HIGH), the output is "0" (LOW), and vice versa.</p>
+                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
+                    <table class="w-full border-collapse border border-blue-300">
+                        <thead class="bg-blue-100">
+                            <tr>
+                                <th class="border px-4 py-2 text-blue-700">Input A</th>
+                                <th class="border px-4 py-2 text-blue-700">Output</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-center">
+                    <img src="images/not.png" alt="NOT Gate Symbol" class="max-w-xs rounded-md shadow-sm border border-blue-200">
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
+            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">XOR Gate</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <p class="mb-4 text-blue-600">The <span class="font-semibold">XOR (Exclusive OR) gate</span> outputs a "1" (HIGH) only when its inputs are <span class="font-semibold">different</span>. If both inputs are the same (both "0" or both "1"), the output is "0" (LOW).</p>
+                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
+                    <table class="w-full border-collapse border border-blue-300">
+                        <thead class="bg-blue-100">
+                            <tr>
+                                <th class="border px-4 py-2 text-blue-700">Input A</th>
+                                <th class="border px-4 py-2 text-blue-700">Input B</th>
+                                <th class="border px-4 py-2 text-blue-700">Output</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-center">
+                    <img src="images/xor.png" alt="XOR Gate Symbol" class="max-w-xs rounded-md shadow-sm border border-blue-200">
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
+            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">NAND Gate</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <p class=" italic mb-4 text-blue-600">The <span class="font-semibold">NAND gate</span> is a combination of a NOT gate and an AND gate. It outputs a "0" (LOW) only when <span class="font-semibold">all</span> its inputs are "1" (HIGH). Otherwise, the output is "1" (HIGH).</p>
+                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
+                    <table class="w-full border-collapse border border-blue-300">
+                        <thead class="bg-blue-100">
+                            <tr>
+                                <th class="border px-4 py-2 text-blue-700">Input A</th>
+                                <th class="border px-4 py-2 text-blue-700">Input B</th>
+                                <th class="border px-4 py-2 text-blue-700">Output</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-center">
+                    <img src="images/nand.png" alt="NAND Gate Symbol" class="max-w-xs rounded-md shadow-sm border border-blue-200">
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
+            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">NOR Gate</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <p class="mb-4 text-blue-600">The <span class="font-semibold">NOR gate</span> is a combination of a NOT gate and an OR gate. It outputs a "1" (HIGH) only when <span class="font-semibold">all</span> its inputs are "0" (LOW). If any input is "1" (HIGH), the output is "0" (LOW).</p>
+                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
+                    <table class="w-full border-collapse border border-blue-300">
+                        <thead class="bg-blue-100">
+                            <tr>
+                                <th class="border px-4 py-2 text-blue-700">Input A</th>
+                                <th class="border px-4 py-2 text-blue-700">Input B</th>
+                                <th class="border px-4 py-2 text-blue-700">Output</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td></tr>
+                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-center">
+                    <img src="images/NOR_ANSI_Labelled.svg.png" alt="NOR Gate Symbol" class="max-w-xs rounded-md shadow-sm border border-blue-200">
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
+            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">XNOR Gate</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <p class="mb-4 text-blue-600">The <span class="font-semibold">XNOR (Exclusive NOR) gate</span> outputs a "1" (HIGH) only when its inputs are <span class="font-semibold">the same</span> (both "0" or both "1"). If the inputs are different, the output is "0" (LOW).</p>
+                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
+                    <table class="w-full border-collapse border border-blue-300">
+                        <thead class="bg-blue-100">
+                        
+                                <th class="border px-4 py-2 text-blue-700">Input A</th>
+                                <th class="border px-4 py-2 text-blue-700">Input b</th>
+                                <th class="border px-4 py-2 text-blue-700">Output</th>
+                                <tbody>
+                                    <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
+                                    <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
+                                    <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td></tr>
+                                    <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td></tr>
+                                </tbody>
+                                </table>
+                                </div>
+                                <div class="flex justify-center">
+                                    <img src="images/Xnor-gate-en.svg.png" alt="XNOR GATE SYMBOL" class="max-w-xs rounded-md shadow-sm border border-blue-200">
+                                </div>
+                                </div>
+                                </div>
+                                
+                                
