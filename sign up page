@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Logic Gate Builder - Sign Up</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    .bg-grid-pattern {
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.3) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.3) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .form-label {@apply block text-sm font-medium text-gray-700 mb-1;}
+    .form-input {@apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200;}
+    .btn-primary {@apply w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-4 rounded-lg font-medium shadow-md hover:shadow-lg transform hover:scale-[1.01] transition duration-200;}
+    .link-primary {@apply text-blue-600 hover:text-blue-800 font-medium transition duration-200;}
+    .password-strength-weak {@apply text-red-600;}
+    .password-strength-medium { color: #d97706; }
+    .password-strength-strong {@apply text-green-600;}
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-blue-200 min-h-screen font-['Inter']">
+  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full opacity-20 blur-3xl animate-pulse"></div>
+    <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-300 rounded-full opacity-20 blur-3xl animate-pulse"></div>
+  </div>
+
+  <div class="min-h-screen flex items-center justify-center p-4 relative">
+    <div class="max-w-lg w-full bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden transform transition duration-300 hover:scale-[1.01]">
+      <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-8 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-grid-pattern opacity-10"></div>
+        <div class="relative">
+          <i class="fas fa-microchip text-4xl text-white mb-4"></i>
+          <h1 class="text-3xl font-bold text-white mb-2">Logic Gate Builder</h1>
+          <p class="text-blue-100">Create your digital circuits!</p>
+        </div>
+      </div>
+
+      <form class="space-y-6 px-6 pb-8" id="signupForm">
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="firstName" class="form-label">First Name</label>
+              <input type="text" id="firstName" name="firstName" required class="form-input" placeholder="John" />
+            </div>
+            <div>
+              <label for="lastName" class="form-label">Last Name</label>
+              <input type="text" id="lastName" name="lastName" required class="form-input" placeholder="Doe" />
+            </div>
+          </div>
+          <div>
+            <label for="username" class="form-label">Username</label>
+            <input type="text" id="username" name="username" required class="form-input" placeholder="johndoe123" />
+          </div>
+          <div>
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" required class="form-input" placeholder="example@gmail.com" />
+          </div>
+          <div>
+            <label for="dob" class="form-label">Date of Birth</label>
+            <input type="date" id="dob" name="dob" required class="form-input" />
+          </div>
+          <div>
+            <label for="password" class="form-label">Password</label>
+            <div class="relative">
+              <input type="password" id="password" name="password" required class="form-input pr-10" placeholder="••••••••" maxlength="32" minlength="8" />
+              <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600" id="togglePasswordBtn">
+                <i class="fas fa-eye" id="toggleIcon"></i>
+              </button>
+            </div>
+            <div class="flex justify-between mt-1">
+              <small id="strengthMsg" class="text-xs text-gray-500">Strength: <span class="font-medium" id="strengthLabel">-</span></small>
+              <small id="charCount" class="text-xs text-gray-400">0/32</small>
+            </div>
+          </div>
+          <div>
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required class="form-input" placeholder="••••••••" maxlength="32" minlength="8" />
+          </div>
+          <div>
+            <label for="phone" class="form-label">Phone Number</label>
+            <input type="tel" id="phone" name="phone" required class="form-input" placeholder="+91 1234567890" maxlength="15" minlength="12" />
+          </div>
+          <div>
+            <label for="country" class="form-label">Country</label>
+            <select id="country" name="country" class="form-input">
+              <option value="India">India</option>
+              <option value="USA">USA</option>
+              <option value="UK">UK</option>
+              <option value="Canada">Canada</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary group" id="submitBtn">
+          <span class="flex items-center justify-center">
+            <i class="fas fa-user-plus mr-2 group-hover:translate-x-1 transition-transform"></i>
+            Sign Up
+          </span>
+        </button>
+      </form>
+
+      <div class="text-center pb-6">
+        <p class="text-sm text-blue-700">
+          Already have an account?
+          <a href="login .html" class="link-primary">Log in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const passwordInput = document.getElementById('password');
+      const confirmInput = document.getElementById('confirmPassword');
+      const toggleBtn = document.getElementById('togglePasswordBtn');
+      const toggleIcon = document.getElementById('toggleIcon');
+      const strengthLabel = document.getElementById('strengthLabel');
+      const charCount = document.getElementById('charCount');
+      const signupForm = document.getElementById('signupForm');
+      const submitBtn = document.getElementById('submitBtn');
+
+      toggleBtn.addEventListener('click', function () {
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+        confirmInput.type = type;
+        toggleIcon.classList.toggle('fa-eye-slash');
+        toggleIcon.classList.toggle('fa-eye');
+      });
+
+      passwordInput.addEventListener('input', function () {
+        const val = passwordInput.value;
+        charCount.textContent = `${val.length}/32`;
+
+        let strength = 0;
+        if (val.length >= 8) strength++;
+        if (val.length >= 12) strength++;
+        if (/[A-Z]/.test(val)) strength++;
+        if (/\d/.test(val)) strength++;
+        if (/\W/.test(val)) strength++;
+
+        strengthLabel.textContent =
+          strength >= 4 ? 'Strong' :
+          strength >= 2 ? 'Medium' :
+          val.length > 0 ? 'Weak' : '-';
+
+        strengthLabel.className = 'font-medium ' + (
+          strength >= 4 ? 'password-strength-strong' :
+          strength >= 2 ? 'password-strength-medium' :
+          val.length > 0 ? 'password-strength-weak' : 'text-gray-500'
+        );
+      });
+      signupForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+      
+        if (passwordInput.value !== confirmInput.value) {
+          alert('Passwords do not match!');
+          return;
+        }
+      
+        const dob = new Date(document.getElementById('dob').value);
+        const age = new Date().getFullYear() - dob.getFullYear();
+        if (age < 13) {
+          alert('You must be at least 13 years old to sign up.');
+          return;
+        }
+      
+        const user = {
+          username: document.getElementById('username').value,
+          email: document.getElementById('email').value,
+          password: passwordInput.value, // WARNING: Plaintext password
+        };
+      
+        // Save to localStorage
+        localStorage.setItem('user', JSON.stringify(user));
+      
+        // Success
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Creating...';
+        submitBtn.disabled = true;
+            
+        setTimeout(() => {
+          document.getElementById('toastSuccess').classList.remove('hidden');
+          setTimeout(() => {
+            window.location.href = 'learn.html';      
+          }, 1500);
+        }, 1200);
+            });
+
+    });
+  </script>
+</body>
+</html>
