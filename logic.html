@@ -39,6 +39,15 @@
               linear-gradient(to right, #e2e8f0 1px, transparent 1px),
               linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
         }
+
+        /* Phase 4: Wire Animations */
+        @keyframes wireflow {
+            to { stroke-dashoffset: -20; }
+        }
+        .wire-active {
+            stroke-dasharray: 10 10;
+            animation: wireflow 0.5s linear infinite;
+        }
     </style>
 </head>
 <body class="flex flex-col h-screen bg-slate-50 font-sans">
@@ -47,15 +56,23 @@
         <div class="flex gap-4">
             <a href="learn.html" class="hover:text-blue-200 mt-1">Learn Modes</a>
             <button onclick="clearCanvas()" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600 font-semibold shadow">Clear Workspace</button>
-            <button onclick="saveCircuit()" class="bg-green-500 px-3 py-1 rounded hover:bg-green-600 font-semibold shadow">Save Circuit</button>
-            <button onclick="loadCircuit()" class="bg-blue-500 px-3 py-1 rounded hover:bg-blue-600 font-semibold shadow">Load Circuit</button>
+            <!-- Phase 4 Export JSON Button -->
+            <button onclick="exportCircuit()" class="bg-indigo-500 px-3 py-1 rounded hover:bg-indigo-600 font-semibold shadow text-white">Export (.json)</button>
+            <button onclick="saveCircuit()" class="bg-green-500 px-3 py-1 rounded hover:bg-green-600 font-semibold shadow">Save to Browser</button>
+            <button onclick="loadCircuit()" class="bg-blue-500 px-3 py-1 rounded hover:bg-blue-600 font-semibold shadow">Load</button>
         </div>
     </nav>
     <div class="flex flex-1 overflow-hidden relative">
         <!-- Sidebar -->
         <div class="w-64 bg-white border-r shadow-lg p-4 z-20 flex flex-col gap-2 overflow-y-auto">
+            <!-- Phase 4 Undo/Redo Visual Controls -->
+            <div class="flex gap-2 mb-2 w-full">
+                <button onclick="undo()" class="flex-1 p-2 border rounded bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold shadow-sm" title="Undo (Ctrl+Z)">⟲ Undo</button>
+                <button onclick="redo()" class="flex-1 p-2 border rounded bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold shadow-sm" title="Redo (Ctrl+Y)">Redo ⟳</button>
+            </div>
+
             <h2 class="font-bold text-gray-700 mb-2 border-b pb-2">Components</h2>
-            <div class="text-sm text-gray-500 mb-2">Click to add to canvas. Wiring goes from right ports to left ports.</div>
+            <div class="text-sm text-gray-500 mb-2">Click to add to canvas. Wiring goes from right to left.</div>
             
             <button onclick="addNode('input')" class="p-2 border rounded bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-left pl-4">👉 Signal Input</button>
             <button onclick="addNode('output')" class="p-2 border rounded bg-green-50 hover:bg-green-100 text-green-700 font-bold mb-4 text-left pl-4">🏁 Signal Output</button>
@@ -86,11 +103,63 @@
         nextNodeId: 1
     };
 
-    let dragging = { node: null, offsetX: 0, offsetY: 0 };
+    // Phase 4: History Stack Initialization
+    let historyStack = [];
+    let historyIndex = -1;
+
+    let dragging = { node: null, offsetX: 0, offsetY: 0, hasMoved: false };
     let wiring = { active: false, fromNode: null, fromPort: null, startX: 0, startY: 0 };
 
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
+
+    // Phase 4 Tools
+    // Ctrl+Z and Ctrl+Y listeners
+    window.addEventListener('keydown', (e) => {
+        if((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
+        if((e.ctrlKey || e.metaKey) && e.key === 'y') { e.preventDefault(); redo(); }
+    });
+
+    function saveHistory() {
+        const stateCopy = {
+            nodes: JSON.parse(JSON.stringify(state.nodes)),
+            connections: JSON.parse(JSON.stringify(state.connections)),
+            nextNodeId: state.nextNodeId
+        };
+        historyStack = historyStack.slice(0, historyIndex + 1);
+        historyStack.push(stateCopy);
+        historyIndex++;
+    }
+
+    function undo() {
+        if(historyIndex > 0) {
+            historyIndex--;
+            const data = historyStack[historyIndex];
+            state.nodes = JSON.parse(JSON.stringify(data.nodes));
+            state.connections = JSON.parse(JSON.stringify(data.connections));
+            state.nextNodeId = data.nextNodeId;
+            renderNodes(); evaluateGraph();
+        }
+    }
+
+    function redo() {
+        if(historyIndex < historyStack.length - 1) {
+            historyIndex++;
+            const data = historyStack[historyIndex];
+            state.nodes = JSON.parse(JSON.stringify(data.nodes));
+            state.connections = JSON.parse(JSON.stringify(data.connections));
+            state.nextNodeId = data.nextNodeId;
+            renderNodes(); evaluateGraph();
+        }
+    }
+
+    function exportCircuit() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+        const dlAnchorElem = document.createElement('a');
+        dlAnchorElem.setAttribute("href", dataStr);
+        dlAnchorElem.setAttribute("download", "logic_circuit.json");
+        dlAnchorElem.click();
+    }
 
     function addNode(type) {
         const id = 'node_' + state.nextNodeId++;
@@ -98,6 +167,7 @@
         state.nodes.push(node);
         renderNodes();
         evaluateGraph();
+        saveHistory();
     }
 
     function renderNodes() {
@@ -135,6 +205,7 @@
             el.onmousedown = (e) => {
                 if(e.target.classList.contains('port') || e.target.tagName==='BUTTON') return;
                 dragging.node = node;
+                dragging.hasMoved = false;
                 const rect = el.getBoundingClientRect();
                 dragging.offsetX = e.clientX - rect.left;
                 dragging.offsetY = e.clientY - rect.top;
@@ -157,6 +228,7 @@
             node.value = node.value === 1 ? 0 : 1;
             renderNodes();
             evaluateGraph();
+            saveHistory();
         }
     }
 
@@ -188,6 +260,7 @@
                 
                 state.connections.push({ fromNode: outNode, fromPort: 'out', toNode: inNode, toPort: inPort });
                 evaluateGraph();
+                saveHistory();
             }
         }
         wiring.active = false;
@@ -196,6 +269,7 @@
 
     function onMouseMove(e) {
         if (dragging.node) {
+            dragging.hasMoved = true;
             const canvasRect = canvas.getBoundingClientRect();
             dragging.node.x = e.clientX - canvasRect.left - dragging.offsetX;
             dragging.node.y = e.clientY - canvasRect.top - dragging.offsetY;
@@ -212,6 +286,9 @@
 
     function onMouseUp() {
         if (dragging.node) {
+            if (dragging.hasMoved) {
+                saveHistory();
+            }
             dragging.node = null;
         }
         if(wiring.active) {
@@ -225,6 +302,7 @@
         state.connections = state.connections.filter(c => c.fromNode !== id && c.toNode !== id);
         renderNodes();
         evaluateGraph();
+        saveHistory();
     }
 
     function getPortPosition(nodeId, port) {
@@ -241,9 +319,10 @@
         };
     }
 
-    function drawBezier(x1, y1, x2, y2, color) {
+    function drawBezier(x1, y1, x2, y2, color, isFlowing) {
         const offset = Math.abs(x2 - x1) * 0.6 + 20;
-        return `<path d="M ${x1} ${y1} C ${x1 + offset} ${y1}, ${x2 - offset} ${y2}, ${x2} ${y2}" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" />`;
+        const className = isFlowing ? 'class="wire-active"' : '';
+        return `<path ${className} d="M ${x1} ${y1} C ${x1 + offset} ${y1}, ${x2 - offset} ${y2}, ${x2} ${y2}" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" />`;
     }
 
     function renderWires(tempX, tempY) {
@@ -254,13 +333,14 @@
             if(p1 && p2) {
                 // Find signal value to color wire dynamically
                 const sourceNode = state.nodes.find(n => n.id === conn.fromNode);
-                const color = sourceNode && sourceNode.value === 1 ? '#22c55e' : '#cbd5e1'; // Green for 1, Gray for 0
-                svg += drawBezier(p1.x, p1.y, p2.x, p2.y, color);
+                const isHigh = sourceNode && sourceNode.value === 1;
+                const color = isHigh ? '#22c55e' : '#cbd5e1'; // Green for 1, Gray for 0
+                svg += drawBezier(p1.x, p1.y, p2.x, p2.y, color, isHigh);
             }
         });
         
         if (wiring.active && tempX !== undefined) {
-            svg += drawBezier(wiring.startX, wiring.startY, tempX, tempY, '#3b82f6');
+            svg += drawBezier(wiring.startX, wiring.startY, tempX, tempY, '#3b82f6', false);
         }
         svgWires.innerHTML = svg;
     }
@@ -307,6 +387,7 @@
         state.connections = [];
         state.nextNodeId = 1;
         renderNodes();
+        saveHistory();
     }
 
     function saveCircuit() {
@@ -320,6 +401,7 @@
             state = JSON.parse(savedInfo);
             renderNodes();
             evaluateGraph();
+            saveHistory();
         } else {
             alert("No saved circuit found. Make sure to click Save first!");
         }
@@ -338,8 +420,16 @@
         state.nodes[2].x = 300; state.nodes[2].y = 150;
         state.nodes[3].x = 500; state.nodes[3].y = 150;
         
+        // Setup initial wires to showcase it
+        state.connections.push({ fromNode: state.nodes[0].id, fromPort: 'out', toNode: state.nodes[2].id, toPort: 'in-1' });
+        state.connections.push({ fromNode: state.nodes[1].id, fromPort: 'out', toNode: state.nodes[2].id, toPort: 'in-2' });
+        state.connections.push({ fromNode: state.nodes[2].id, fromPort: 'out', toNode: state.nodes[3].id, toPort: 'in' });
+
         renderNodes();
         evaluateGraph();
+
+        // Initialize history with initial state
+        saveHistory();
     }
     </script>
 </body>
