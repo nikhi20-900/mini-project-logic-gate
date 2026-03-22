@@ -1,226 +1,228 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn Logic Gates</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Example of a more modern and readable font */
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>LOGIC_ENGINE_V2 - Documentation</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4edea3",
+                        "surface-container": "#191a1a",
+                        "surface-container-lowest": "#000000",
+                        "surface": "#0e0e0e",
+                        "on-surface": "#e7e5e5",
+                        "on-primary": "#004a31",
+                        "outline-variant": "#484848",
+                        "secondary": "#979ead",
+                        "secondary-container": "#353c48",
+                        "on-secondary-container": "#b9bfcf",
+                        "background": "#0e0e0e",
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"]
+                    },
+                },
+            },
         }
-        .font-study {
-            font-family: 'Georgia', serif; /* Example of a serif font for a different feel */
-        }
-        .font-technical {
-            font-family: 'Consolas', monospace; /* Example of a monospace font */
-        }
-    </style>
+    </script>
 </head>
-
-<body class="bg-blue-50 min-h-screen flex flex-col font-sans">
-    <nav class="bg-blue-700 text-white p-4 shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold">LOGIC GATE </h1>
-            <div class="flex gap-6">
-                <a href="login.html" class="hover:text-blue-200 transition duration-200">Login</a>
-                <a href="logic.html" class="hover:text-blue-200 transition duration-200">Circuit Builder</a>
+<body class="bg-background text-on-surface font-body overflow-hidden h-screen flex flex-col">
+    <!-- TopNavBar -->
+    <nav class="bg-[#191a1a] flex justify-between items-center w-full px-3 h-12 border-b border-[#252626] z-50">
+        <div class="flex items-center gap-6">
+            <span class="font-['Space_Grotesk'] font-bold text-[#4edea3] tracking-tighter text-lg">LOGIC_ENGINE_V2</span>
+            <div class="flex items-center gap-1 font-['Inter'] text-sm tracking-tight">
+                <button onclick="window.location.href='logic.html'" class="px-3 py-1 text-[#979ead] hover:bg-[#252626] transition-colors">Workspace</button>
+                <button onclick="window.location.href='learn.html'" class="px-3 py-1 text-[#4edea3] border-b-2 border-[#4edea3] hover:bg-[#252626] transition-colors">Learn Modes</button>
             </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="window.location.href='login.html'" class="flex items-center gap-2 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-sm text-xs font-bold active:opacity-80 transition-all">Sign In</button>
+            <button onclick="window.location.href='signup.html'" class="flex items-center gap-2 bg-primary text-on-primary px-3 py-1 rounded-sm text-xs font-bold active:opacity-80 transition-all">Register</button>
         </div>
     </nav>
-
-    <main class="container mx-auto p-8">
-        <h1 class="text-3xl font-bold mb-8 text-center text-blue-800">LOGIC GATES</h1>
-
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
-            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">AND Gate</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <p class="mb-4 text-blue-600">The <span class="font-semibold">AND gate</span> outputs a "1" (HIGH) only when <span class="font-semibold">all</span> its inputs are "1" (HIGH). If any input is "0" (LOW), the output is "0" (LOW).</p>
-                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
-                    <table class="w-full border-collapse border border-blue-300">
-                        <thead class="bg-blue-100">
-                            <tr>
-                                <th class="border px-4 py-2 text-blue-700">Input A</th>
-                                <th class="border px-4 py-2 text-blue-700">Input B</th>
-                                <th class="border px-4 py-2 text-blue-700">Output</th>
-                            </tr>
+    
+    <main class="flex-1 bg-surface relative flex justify-center p-8 overflow-y-auto">
+        <div class="bg-surface-container border border-outline-variant/20 rounded shadow-sm w-full max-w-5xl p-8 mb-12 h-fit">
+            <div class="border-b border-outline-variant/30 pb-4 mb-8">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="material-symbols-outlined text-primary text-2xl" data-icon="book">book</span>
+                    <h1 class="font-['Space_Grotesk'] text-2xl text-primary font-bold tracking-widest uppercase">Documentation: Gates & Symbols</h1>
+                </div>
+                <p class="text-secondary text-sm leading-relaxed">This terminal serves as the reference manual for combinatorial logic configurations, truth tables, and standard ANSI-style schematic symbols utilized directly by LOGIC_ENGINE_V2.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- AND Gate Node -->
+                <div class="p-6 border border-outline-variant/20 bg-surface-container-lowest rounded-lg relative overflow-hidden group hover:border-[#4edea3]/50 transition-colors">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#4edea3]/20 group-hover:bg-[#4edea3] transition-colors"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-[#191a1a] border border-outline-variant/30 text-white font-label font-bold text-[10px] py-1 px-3 rounded shadow-sm tracking-widest">AND GATE</span>
+                        <svg width="40" height="30" viewBox="0 0 60 40">
+                            <path d="M10,5 L30,5 A15,15 0 0,1 30,35 L10,35 Z" fill="none" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="0" y1="12" x2="10" y2="12" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="0" y1="28" x2="10" y2="28" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="45" y1="20" x2="60" y2="20" stroke="#4edea3" stroke-width="3"/>
+                        </svg>
+                    </div>
+                    <p class="text-secondary text-xs mb-5 min-h-[48px] leading-relaxed">Outputs a HIGH (1) signal strictly if both Input A &amp; Input B are HIGH (1). Performs Boolean Conjunction.</p>
+                    <table class="w-full text-[10px] font-label text-center border-collapse border border-outline-variant/20 rounded">
+                        <thead class="bg-[#191a1a]">
+                            <tr class="text-secondary border-b border-outline-variant/20"><th class="px-2 py-2 w-1/3">A</th><th class="px-2 py-2 w-1/3 border-l border-outline-variant/20">B</th><th class="px-2 py-2 text-primary border-l border-outline-variant/20">Out</th></tr>
                         </thead>
-                        <tbody>
-                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td></tr>
+                        <tbody class="text-on-surface">
+                            <tr class="border-b border-outline-variant/10"><td>0</td><td class="border-l border-outline-variant/10">0</td><td class="border-l border-outline-variant/10 font-bold">0</td></tr>
+                            <tr class="border-b border-outline-variant/10"><td>0</td><td class="border-l border-outline-variant/10">1</td><td class="border-l border-outline-variant/10 font-bold">0</td></tr>
+                            <tr class="border-b border-outline-variant/10"><td>1</td><td class="border-l border-outline-variant/10">0</td><td class="border-l border-outline-variant/10 font-bold">0</td></tr>
+                            <tr class="bg-primary/5"><td>1</td><td class="border-l border-outline-variant/10">1</td><td class="border-l border-outline-variant/10 font-bold text-primary">1</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="flex justify-center">
-                    <img src="images/and gate.png" alt="AND Gate Symbol" class="max-w-xs rounded-md shadow-sm border border-blue-200">
-                </div>
-            </div>
-        </div>
 
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
-            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">OR Gate</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <p class="mb-4 text-blue-600">The <span class="font-semibold">OR gate</span> outputs a "1" (HIGH) if <span class="font-semibold">at least one</span> of its inputs is "1" (HIGH). It outputs "0" (LOW) only when <span class="font-semibold">all</span> inputs are "0" (LOW).</p>
-                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
-                    <table class="w-full border-collapse border border-blue-300">
-                        <thead class="bg-blue-100">
-                            <tr>
-                                <th class="border px-4 py-2 text-blue-700">Input A</th>
-                                <th class="border px-4 py-2 text-blue-700">Input B</th>
-                                <th class="border px-4 py-2 text-blue-700">Output</th>
-                            </tr>
+                <!-- OR Gate Node -->
+                <div class="p-6 border border-outline-variant/20 bg-surface-container-lowest rounded-lg relative overflow-hidden group hover:border-[#4edea3]/50 transition-colors">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#4edea3]/20 group-hover:bg-[#4edea3] transition-colors"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-[#191a1a] border border-outline-variant/30 text-white font-label font-bold text-[10px] py-1 px-3 rounded shadow-sm tracking-widest">OR GATE</span>
+                        <svg width="40" height="30" viewBox="0 0 60 40">
+                            <path d="M10,5 Q25,5 45,20 Q25,35 10,35 Q20,20 10,5 Z" fill="none" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="0" y1="12" x2="12" y2="12" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="0" y1="28" x2="12" y2="28" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="45" y1="20" x2="60" y2="20" stroke="#4edea3" stroke-width="3"/>
+                        </svg>
+                    </div>
+                    <p class="text-secondary text-xs mb-5 min-h-[48px] leading-relaxed">Outputs a HIGH (1) signal if at least one of the inputs is HIGH. Performs Boolean Disjunction.</p>
+                    <table class="w-full text-[10px] font-label text-center border-collapse border border-outline-variant/20 rounded">
+                        <thead class="bg-[#191a1a]">
+                            <tr class="text-secondary border-b border-outline-variant/20"><th class="px-2 py-2 w-1/3">A</th><th class="px-2 py-2 w-1/3 border-l border-outline-variant/20">B</th><th class="px-2 py-2 text-primary border-l border-outline-variant/20">Out</th></tr>
                         </thead>
-                        <tbody>
-                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td></tr>
+                        <tbody class="text-on-surface">
+                            <tr class="border-b border-outline-variant/10"><td>0</td><td class="border-l border-outline-variant/10">0</td><td class="border-l border-outline-variant/10 font-bold">0</td></tr>
+                            <tr class="bg-primary/5 border-b border-outline-variant/10"><td>0</td><td class="border-l border-outline-variant/10">1</td><td class="border-l border-outline-variant/10 font-bold text-primary">1</td></tr>
+                            <tr class="bg-primary/5 border-b border-outline-variant/10"><td>1</td><td class="border-l border-outline-variant/10">0</td><td class="border-l border-outline-variant/10 font-bold text-primary">1</td></tr>
+                            <tr class="bg-primary/5"><td>1</td><td class="border-l border-outline-variant/10">1</td><td class="border-l border-outline-variant/10 font-bold text-primary">1</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="flex justify-center">
-                    <img src="images/or gate.png" alt="OR Gate Symbol" class="max-w-xs rounded-md shadow-sm border border-blue-200">
-                </div>
-            </div>
-        </div>
 
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
-            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">NOT Gate</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <p class="mb-4 text-blue-600">The <span class="font-semibold">NOT gate</span>, also known as an <span class="font-semibold">inverter</span>, has only one input. It outputs the <span class="font-semibold">opposite</span> of its input. If the input is "1" (HIGH), the output is "0" (LOW), and vice versa.</p>
-                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
-                    <table class="w-full border-collapse border border-blue-300">
-                        <thead class="bg-blue-100">
-                            <tr>
-                                <th class="border px-4 py-2 text-blue-700">Input A</th>
-                                <th class="border px-4 py-2 text-blue-700">Output</th>
-                            </tr>
+                <!-- NOT Gate Node -->
+                <div class="p-6 border border-outline-variant/20 bg-surface-container-lowest rounded-lg relative overflow-hidden group hover:border-[#4edea3]/50 transition-colors">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#4edea3]/20 group-hover:bg-[#4edea3] transition-colors"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-[#191a1a] border border-outline-variant/30 text-white font-label font-bold text-[10px] py-1 px-3 rounded shadow-sm tracking-widest">NOT GATE</span>
+                        <svg width="40" height="30" viewBox="0 0 60 40">
+                            <polygon points="15,5 35,20 15,35" fill="none" stroke="#4edea3" stroke-width="3"/>
+                            <circle cx="39" cy="20" r="4" fill="none" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="0" y1="20" x2="15" y2="20" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="43" y1="20" x2="60" y2="20" stroke="#4edea3" stroke-width="3"/>
+                        </svg>
+                    </div>
+                    <p class="text-secondary text-xs mb-5 min-h-[48px] leading-relaxed">Inverts the input. Only accepts 1 input. If Input is HIGH, Output is LOW. Performs Boolean Negation.</p>
+                    <table class="w-full text-[10px] font-label text-center border-collapse border border-outline-variant/20 rounded">
+                        <thead class="bg-[#191a1a]">
+                            <tr class="text-secondary border-b border-outline-variant/20"><th class="px-2 py-2 w-1/2">A</th><th class="px-2 py-2 text-primary border-l border-outline-variant/20">Out</th></tr>
                         </thead>
-                        <tbody>
-                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
+                        <tbody class="text-on-surface">
+                            <tr class="bg-primary/5 border-b border-outline-variant/10"><td class="py-1.5">0</td><td class="border-l border-outline-variant/10 font-bold text-primary">1</td></tr>
+                            <tr><td class="py-1.5">1</td><td class="border-l border-outline-variant/10 font-bold">0</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="flex justify-center">
-                    <img src="images/not.png" alt="NOT Gate Symbol" class="max-w-xs rounded-md shadow-sm border border-blue-200">
-                </div>
-            </div>
-        </div>
 
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
-            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">XOR Gate</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <p class="mb-4 text-blue-600">The <span class="font-semibold">XOR (Exclusive OR) gate</span> outputs a "1" (HIGH) only when its inputs are <span class="font-semibold">different</span>. If both inputs are the same (both "0" or both "1"), the output is "0" (LOW).</p>
-                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
-                    <table class="w-full border-collapse border border-blue-300">
-                        <thead class="bg-blue-100">
-                            <tr>
-                                <th class="border px-4 py-2 text-blue-700">Input A</th>
-                                <th class="border px-4 py-2 text-blue-700">Input B</th>
-                                <th class="border px-4 py-2 text-blue-700">Output</th>
-                            </tr>
+                <!-- NAND Gate Node -->
+                <div class="p-6 border border-outline-variant/20 bg-surface-container-lowest rounded-lg relative overflow-hidden group hover:border-[#4edea3]/50 transition-colors">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#4edea3]/20 group-hover:bg-[#4edea3] transition-colors"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-[#191a1a] border border-outline-variant/30 text-white font-label font-bold text-[10px] py-1 px-3 rounded shadow-sm tracking-widest">NAND GATE</span>
+                        <svg width="40" height="30" viewBox="0 0 60 40">
+                            <path d="M10,5 L25,5 A15,15 0 0,1 25,35 L10,35 Z" fill="none" stroke="#4edea3" stroke-width="3"/>
+                            <circle cx="29" cy="20" r="4" fill="none" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="0" y1="12" x2="10" y2="12" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="0" y1="28" x2="10" y2="28" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="33" y1="20" x2="60" y2="20" stroke="#4edea3" stroke-width="3"/>
+                        </svg>
+                    </div>
+                    <p class="text-secondary text-xs mb-5 min-h-[48px] leading-relaxed">Outputs a LOW (0) signal strictly if both Input A &amp; Input B are HIGH. The inverted form of AND.</p>
+                    <table class="w-full text-[10px] font-label text-center border-collapse border border-outline-variant/20 rounded">
+                        <thead class="bg-[#191a1a]">
+                            <tr class="text-secondary border-b border-outline-variant/20"><th class="px-2 py-2 w-1/3">A</th><th class="px-2 py-2 w-1/3 border-l border-outline-variant/20">B</th><th class="px-2 py-2 text-primary border-l border-outline-variant/20">Out</th></tr>
                         </thead>
-                        <tbody>
-                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
+                        <tbody class="text-on-surface">
+                            <tr class="bg-primary/5 border-b border-outline-variant/10"><td>0</td><td class="border-l border-outline-variant/10">0</td><td class="border-l border-outline-variant/10 font-bold text-primary">1</td></tr>
+                            <tr class="bg-primary/5 border-b border-outline-variant/10"><td>0</td><td class="border-l border-outline-variant/10">1</td><td class="border-l border-outline-variant/10 font-bold text-primary">1</td></tr>
+                            <tr class="bg-primary/5 border-b border-outline-variant/10"><td>1</td><td class="border-l border-outline-variant/10">0</td><td class="border-l border-outline-variant/10 font-bold text-primary">1</td></tr>
+                            <tr><td>1</td><td class="border-l border-outline-variant/10">1</td><td class="border-l border-outline-variant/10 font-bold">0</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="flex justify-center">
-                    <img src="images/xor.png" alt="XOR Gate Symbol" class="max-w-xs rounded-md shadow-sm border border-blue-200">
-                </div>
-            </div>
-        </div>
 
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
-            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">NAND Gate</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <p class=" italic mb-4 text-blue-600">The <span class="font-semibold">NAND gate</span> is a combination of a NOT gate and an AND gate. It outputs a "0" (LOW) only when <span class="font-semibold">all</span> its inputs are "1" (HIGH). Otherwise, the output is "1" (HIGH).</p>
-                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
-                    <table class="w-full border-collapse border border-blue-300">
-                        <thead class="bg-blue-100">
-                            <tr>
-                                <th class="border px-4 py-2 text-blue-700">Input A</th>
-                                <th class="border px-4 py-2 text-blue-700">Input B</th>
-                                <th class="border px-4 py-2 text-blue-700">Output</th>
-                            </tr>
+                <!-- NOR Gate Node -->
+                <div class="p-6 border border-outline-variant/20 bg-surface-container-lowest rounded-lg relative overflow-hidden group hover:border-[#4edea3]/50 transition-colors">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#4edea3]/20 group-hover:bg-[#4edea3] transition-colors"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-[#191a1a] border border-outline-variant/30 text-white font-label font-bold text-[10px] py-1 px-3 rounded shadow-sm tracking-widest">NOR GATE</span>
+                        <svg width="40" height="30" viewBox="0 0 60 40">
+                            <path d="M10,5 Q25,5 35,20 Q25,35 10,35 Q20,20 10,5 Z" fill="none" stroke="#4edea3" stroke-width="3"/>
+                            <circle cx="39" cy="20" r="4" fill="none" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="0" y1="12" x2="12" y2="12" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="0" y1="28" x2="12" y2="28" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="43" y1="20" x2="60" y2="20" stroke="#4edea3" stroke-width="3"/>
+                        </svg>
+                    </div>
+                    <p class="text-secondary text-xs mb-5 min-h-[48px] leading-relaxed">Outputs a HIGH (1) signal strictly if BOTH inputs are LOW (0). The inverted form of OR.</p>
+                    <table class="w-full text-[10px] font-label text-center border-collapse border border-outline-variant/20 rounded">
+                        <thead class="bg-[#191a1a]">
+                            <tr class="text-secondary border-b border-outline-variant/20"><th class="px-2 py-2 w-1/3">A</th><th class="px-2 py-2 w-1/3 border-l border-outline-variant/20">B</th><th class="px-2 py-2 text-primary border-l border-outline-variant/20">Out</th></tr>
                         </thead>
-                        <tbody>
-                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
+                        <tbody class="text-on-surface">
+                            <tr class="bg-primary/5 border-b border-outline-variant/10"><td>0</td><td class="border-l border-outline-variant/10">0</td><td class="border-l border-outline-variant/10 font-bold text-primary">1</td></tr>
+                            <tr class="border-b border-outline-variant/10"><td>0</td><td class="border-l border-outline-variant/10">1</td><td class="border-l border-outline-variant/10 font-bold">0</td></tr>
+                            <tr class="border-b border-outline-variant/10"><td>1</td><td class="border-l border-outline-variant/10">0</td><td class="border-l border-outline-variant/10 font-bold">0</td></tr>
+                            <tr><td>1</td><td class="border-l border-outline-variant/10">1</td><td class="border-l border-outline-variant/10 font-bold">0</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="flex justify-center">
-                    <img src="images/nand.png" alt="NAND Gate Symbol" class="max-w-xs rounded-md shadow-sm border border-blue-200">
-                </div>
-            </div>
-        </div>
 
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
-            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">NOR Gate</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <p class="mb-4 text-blue-600">The <span class="font-semibold">NOR gate</span> is a combination of a NOT gate and an OR gate. It outputs a "1" (HIGH) only when <span class="font-semibold">all</span> its inputs are "0" (LOW). If any input is "1" (HIGH), the output is "0" (LOW).</p>
-                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
-                    <table class="w-full border-collapse border border-blue-300">
-                        <thead class="bg-blue-100">
-                            <tr>
-                                <th class="border px-4 py-2 text-blue-700">Input A</th>
-                                <th class="border px-4 py-2 text-blue-700">Input B</th>
-                                <th class="border px-4 py-2 text-blue-700">Output</th>
-                            </tr>
+                <!-- XOR Gate Node -->
+                <div class="p-6 border border-outline-variant/20 bg-surface-container-lowest rounded-lg relative overflow-hidden group hover:border-[#4edea3]/50 transition-colors">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#4edea3]/20 group-hover:bg-[#4edea3] transition-colors"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-[#191a1a] border border-outline-variant/30 text-white font-label font-bold text-[10px] py-1 px-3 rounded shadow-sm tracking-widest">XOR GATE</span>
+                        <svg width="40" height="30" viewBox="0 0 60 40">
+                            <path d="M14,5 Q29,5 45,20 Q29,35 14,35 Q24,20 14,5 Z" fill="none" stroke="#4edea3" stroke-width="3"/>
+                            <path d="M10,5 Q20,20 10,35" fill="none" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="0" y1="12" x2="12" y2="12" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="0" y1="28" x2="12" y2="28" stroke="#4edea3" stroke-width="3"/>
+                            <line x1="45" y1="20" x2="60" y2="20" stroke="#4edea3" stroke-width="3"/>
+                        </svg>
+                    </div>
+                    <p class="text-secondary text-xs mb-5 min-h-[48px] leading-relaxed">Outputs a HIGH (1) signal strictly if the inputs are different from each other (exclusive-OR).</p>
+                    <table class="w-full text-[10px] font-label text-center border-collapse border border-outline-variant/20 rounded">
+                        <thead class="bg-[#191a1a]">
+                            <tr class="text-secondary border-b border-outline-variant/20"><th class="px-2 py-2 w-1/3">A</th><th class="px-2 py-2 w-1/3 border-l border-outline-variant/20">B</th><th class="px-2 py-2 text-primary border-l border-outline-variant/20">Out</th></tr>
                         </thead>
-                        <tbody>
-                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td></tr>
-                            <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
+                        <tbody class="text-on-surface">
+                            <tr class="border-b border-outline-variant/10"><td>0</td><td class="border-l border-outline-variant/10">0</td><td class="border-l border-outline-variant/10 font-bold">0</td></tr>
+                            <tr class="bg-primary/5 border-b border-outline-variant/10"><td>0</td><td class="border-l border-outline-variant/10">1</td><td class="border-l border-outline-variant/10 font-bold text-primary">1</td></tr>
+                            <tr class="bg-primary/5 border-b border-outline-variant/10"><td>1</td><td class="border-l border-outline-variant/10">0</td><td class="border-l border-outline-variant/10 font-bold text-primary">1</td></tr>
+                            <tr><td>1</td><td class="border-l border-outline-variant/10">1</td><td class="border-l border-outline-variant/10 font-bold">0</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="flex justify-center">
-                    <img src="images/NOR_ANSI_Labelled.svg.png" alt="NOR Gate Symbol" class="max-w-xs rounded-md shadow-sm border border-blue-200">
-                </div>
+
             </div>
         </div>
-
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 border border-blue-200">
-            <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">XNOR Gate</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <p class="mb-4 text-blue-600">The <span class="font-semibold">XNOR (Exclusive NOR) gate</span> outputs a "1" (HIGH) only when its inputs are <span class="font-semibold">the same</span> (both "0" or both "1"). If the inputs are different, the output is "0" (LOW).</p>
-                    <h3 class="font-semibold text-lg mb-2 text-blue-700">Truth Table</h3>
-                    <table class="w-full border-collapse border border-blue-300">
-                        <thead class="bg-blue-100">
-                        
-                                <th class="border px-4 py-2 text-blue-700">Input A</th>
-                                <th class="border px-4 py-2 text-blue-700">Input b</th>
-                                <th class="border px-4 py-2 text-blue-700">Output</th>
-                                <tbody>
-                                    <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td></tr>
-                                    <tr><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td></tr>
-                                    <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">0</td><td class="border px-4 py-2 text-center">0</td></tr>
-                                    <tr><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td><td class="border px-4 py-2 text-center">1</td></tr>
-                                </tbody>
-                                </table>
-                                </div>
-                                <div class="flex justify-center">
-                                    <img src="images/Xnor-gate-en.svg.png" alt="XNOR GATE SYMBOL" class="max-w-xs rounded-md shadow-sm border border-blue-200">
-                                </div>
-                                </div>
-                                </div>
-                                
-                                
+    </main>
+</body>
+</html>

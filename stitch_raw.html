@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LOGIC_ENGINE_V1 - Workbench</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-surface": "#fcf9f8",
+                        "on-tertiary": "#490005",
+                        "secondary-fixed": "#dce2f3",
+                        "surface-container-high": "#1f2020",
+                        "surface-bright": "#2b2c2c",
+                        "outline-variant": "#484848",
+                        "secondary-dim": "#979ead",
+                        "error-container": "#7f2927",
+                        "primary": "#4edea3",
+                        "surface-container": "#191a1a",
+                        "surface-container-lowest": "#000000",
+                        "on-surface": "#e7e5e5",
+                        "inverse-primary": "#006d4a",
+                        "surface": "#0e0e0e",
+                        "on-error": "#490106",
+                        "on-tertiary-container": "#1f0001",
+                        "on-error-container": "#ff9993",
+                        "tertiary-fixed-dim": "#ec4142",
+                        "surface-container-low": "#131313",
+                        "on-primary": "#004a31",
+                        "on-secondary": "#19202c",
+                        "error-dim": "#bb5551",
+                        "on-primary-container": "#5ae9ac",
+                        "surface-variant": "#252626",
+                        "primary-container": "#005236",
+                        "outline": "#767575",
+                        "on-secondary-container": "#b9bfcf",
+                        "surface-container-highest": "#252626",
+                        "on-tertiary-fixed": "#000000",
+                        "tertiary-container": "#fd4e4d",
+                        "tertiary-dim": "#ff716a",
+                        "background": "#0e0e0e",
+                        "on-surface-variant": "#acabaa",
+                        "on-primary-fixed-variant": "#006947",
+                        "secondary-fixed-dim": "#ced4e4",
+                        "inverse-on-surface": "#565555",
+                        "surface-tint": "#4edea3",
+                        "on-primary-fixed": "#004930",
+                        "on-secondary-fixed-variant": "#555c69",
+                        "surface-dim": "#0e0e0e",
+                        "secondary": "#979ead",
+                        "on-tertiary-fixed-variant": "#3b0003",
+                        "primary-dim": "#3cd096",
+                        "error": "#ee7d77",
+                        "primary-fixed-dim": "#5fedb0",
+                        "primary-fixed": "#6ffbbe",
+                        "secondary-container": "#353c48",
+                        "tertiary": "#ff716a",
+                        "on-secondary-fixed": "#39404c",
+                        "tertiary-fixed": "#fd4e4d",
+                        "on-background": "#e7e5e5"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 18px;
+        }
+        .circuit-grid {
+            background-image: radial-gradient(circle, #252626 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .gate-socket {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #484848;
+        }
+        .gate-socket.active {
+            background: #4edea3;
+            box-shadow: 0 0 4px #4edea3;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body overflow-hidden h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="bg-[#191a1a] dark:bg-[#191a1a] flex justify-between items-center w-full px-3 h-12 border-b border-[#252626] z-50">
+<div class="flex items-center gap-6">
+<span class="font-['Space_Grotesk'] font-bold text-[#4edea3] tracking-tighter text-lg">LOGIC_ENGINE_V1</span>
+<div class="flex items-center gap-1 font-['Inter'] text-sm tracking-tight">
+<button class="px-3 py-1 text-[#4edea3] border-b-2 border-[#4edea3] hover:bg-[#252626] transition-colors">File</button>
+<button class="px-3 py-1 text-[#979ead] hover:bg-[#252626] transition-colors">Edit</button>
+<button class="px-3 py-1 text-[#979ead] hover:bg-[#252626] transition-colors">View</button>
+<button class="px-3 py-1 text-[#979ead] hover:bg-[#252626] transition-colors">Simulate</button>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex items-center bg-surface-container-lowest border border-outline-variant/20 rounded px-2 py-1 gap-2 mr-4">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-xs text-on-surface-variant w-48" placeholder="Search components..." type="text"/>
+</div>
+<button class="flex items-center gap-2 bg-primary text-on-primary px-3 py-1 rounded-sm text-xs font-bold active:opacity-80 transition-all">
+<span class="material-symbols-outlined text-[16px]" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                Run
+            </button>
+<button class="flex items-center gap-2 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-sm text-xs font-bold active:opacity-80 transition-all">
+<span class="material-symbols-outlined text-[16px]" data-icon="refresh">refresh</span>
+                Reset
+            </button>
+<div class="h-4 w-[1px] bg-outline-variant/30 mx-2"></div>
+<div class="flex items-center gap-1">
+<button class="p-1.5 text-secondary hover:bg-[#252626] rounded transition-colors" title="Save">
+<span class="material-symbols-outlined" data-icon="save">save</span>
+</button>
+<button class="p-1.5 text-secondary hover:bg-[#252626] rounded transition-colors" title="Settings">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="p-1.5 text-secondary hover:bg-[#252626] rounded transition-colors" title="Help">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+</div>
+</div>
+</nav>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="bg-[#131313] dark:bg-[#131313] flex flex-col h-full w-64 border-r border-[#1f2020] z-40">
+<div class="p-4 border-b border-outline-variant/10">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-8 h-8 bg-surface-container-highest rounded flex items-center justify-center border border-outline-variant/20">
+<span class="material-symbols-outlined text-primary" data-icon="memory">memory</span>
+</div>
+<div class="flex flex-col">
+<span class="font-['Space_Grotesk'] text-[11px] uppercase tracking-widest text-primary">Project_Alpha</span>
+<span class="font-['Space_Grotesk'] text-[9px] uppercase tracking-widest text-secondary">Local_Instance</span>
+</div>
+</div>
+<button class="w-full bg-surface-container-highest text-primary border border-primary/20 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-surface-bright transition-all">
+                    New Component
+                </button>
+</div>
+<nav class="flex-1 py-4 overflow-y-auto">
+<div class="px-4 py-2 bg-[#1f2020] text-[#4edea3] border-l-2 border-[#4edea3] flex items-center gap-3 cursor-pointer transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+<span class="font-['Space_Grotesk'] text-[11px] uppercase tracking-widest">Gate Library</span>
+</div>
+<div class="px-4 py-2 text-[#979ead] hover:bg-[#191a1a] flex items-center gap-3 cursor-pointer transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="input">input</span>
+<span class="font-['Space_Grotesk'] text-[11px] uppercase tracking-widest">IO Components</span>
+</div>
+<div class="px-4 py-2 text-[#979ead] hover:bg-[#191a1a] flex items-center gap-3 cursor-pointer transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="developer_board">developer_board</span>
+<span class="font-['Space_Grotesk'] text-[11px] uppercase tracking-widest">Logic Blocks</span>
+</div>
+<div class="px-4 py-2 text-[#979ead] hover:bg-[#191a1a] flex items-center gap-3 cursor-pointer transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="code">code</span>
+<span class="font-['Space_Grotesk'] text-[11px] uppercase tracking-widest">Scripting</span>
+</div>
+<div class="px-4 py-2 text-[#979ead] hover:bg-[#191a1a] flex items-center gap-3 cursor-pointer transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-['Space_Grotesk'] text-[11px] uppercase tracking-widest">History</span>
+</div>
+<!-- Gate Sub-library -->
+<div class="mt-6 px-4">
+<span class="text-[9px] text-on-surface-variant font-bold uppercase tracking-[0.2em] mb-3 block opacity-50">Standard Gates</span>
+<div class="grid grid-cols-1 gap-1">
+<div class="flex items-center justify-between p-2 bg-surface-container-lowest border border-outline-variant/10 rounded group cursor-grab active:cursor-grabbing hover:border-primary/40 transition-colors">
+<span class="text-xs font-label">AND GATE</span>
+<span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors text-sm" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<div class="flex items-center justify-between p-2 bg-surface-container-lowest border border-outline-variant/10 rounded group cursor-grab active:cursor-grabbing hover:border-primary/40 transition-colors">
+<span class="text-xs font-label">OR GATE</span>
+<span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors text-sm" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<div class="flex items-center justify-between p-2 bg-surface-container-lowest border border-outline-variant/10 rounded group cursor-grab active:cursor-grabbing hover:border-primary/40 transition-colors">
+<span class="text-xs font-label">NOT GATE</span>
+<span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors text-sm" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<div class="flex items-center justify-between p-2 bg-surface-container-lowest border border-outline-variant/10 rounded group cursor-grab active:cursor-grabbing hover:border-primary/40 transition-colors">
+<span class="text-xs font-label">NAND GATE</span>
+<span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors text-sm" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<div class="flex items-center justify-between p-2 bg-surface-container-lowest border border-outline-variant/10 rounded group cursor-grab active:cursor-grabbing hover:border-primary/40 transition-colors">
+<span class="text-xs font-label">XOR GATE</span>
+<span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors text-sm" data-icon="drag_indicator">drag_indicator</span>
+</div>
+</div>
+</div>
+</nav>
+<div class="p-4 border-t border-outline-variant/10">
+<div class="px-2 py-1 text-[#979ead] hover:bg-[#191a1a] flex items-center gap-3 cursor-pointer transition-all duration-150 mb-1">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-['Space_Grotesk'] text-[11px] uppercase tracking-widest">Docs</span>
+</div>
+<div class="px-2 py-1 text-[#979ead] hover:bg-[#191a1a] flex items-center gap-3 cursor-pointer transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+<span class="font-['Space_Grotesk'] text-[11px] uppercase tracking-widest">Console</span>
+</div>
+</div>
+</aside>
+<!-- Main Workspace (Canvas) -->
+<main class="flex-1 bg-surface relative circuit-grid overflow-hidden">
+<!-- Gutter Pattern -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary/20"></div>
+<!-- Canvas Controls Overlay -->
+<div class="absolute bottom-6 right-6 flex items-center gap-2 bg-surface-container-high p-1 border border-outline-variant/20 rounded shadow-2xl z-30">
+<button class="p-2 text-secondary hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="zoom_in">zoom_in</span></button>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<span class="px-2 text-[10px] font-label text-secondary">100%</span>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<button class="p-2 text-secondary hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="zoom_out">zoom_out</span></button>
+<button class="p-2 text-secondary hover:text-primary transition-colors ml-2"><span class="material-symbols-outlined" data-icon="grid_on">grid_on</span></button>
+</div>
+<!-- Breadcrumbs -->
+<div class="absolute top-4 left-6 flex items-center gap-2 text-[10px] font-label tracking-widest text-on-surface-variant uppercase z-30">
+<span>Projects</span>
+<span class="material-symbols-outlined text-[12px]" data-icon="chevron_right">chevron_right</span>
+<span>Project_Alpha</span>
+<span class="material-symbols-outlined text-[12px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary">Main_Sim.logic</span>
+</div>
+<!-- Drag and Drop Mockup Gates -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none">
+<!-- AND Gate -->
+<div class="absolute top-[35%] left-[30%] w-32 h-20 bg-surface-container-highest border-2 border-primary rounded-lg pointer-events-auto cursor-move flex flex-col p-2 shadow-xl">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[9px] font-label font-bold text-primary tracking-tighter">AND_01</span>
+<span class="text-[8px] text-on-surface-variant">2-INPUT</span>
+</div>
+<div class="flex-1 flex items-center justify-center font-label font-bold text-lg opacity-80">AND</div>
+<!-- Sockets -->
+<div class="absolute -left-1 top-4 gate-socket active" title="Input A"></div>
+<div class="absolute -left-1 bottom-4 gate-socket" title="Input B"></div>
+<div class="absolute -right-1 top-1/2 -translate-y-1/2 gate-socket active" title="Output"></div>
+</div>
+<!-- Wire Path (SVG) -->
+<svg class="absolute top-0 left-0 w-full h-full pointer-events-none">
+<path d="M 512 400 L 600 400 L 600 400 L 688 400" fill="none" stroke="#4edea3" stroke-width="2"></path>
+</svg>
+<!-- NOT Gate -->
+<div class="absolute top-[35%] left-[55%] w-24 h-20 bg-surface-container-highest border border-outline-variant rounded-lg pointer-events-auto cursor-move flex flex-col p-2 shadow-xl">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[9px] font-label font-bold text-on-surface-variant tracking-tighter">NOT_01</span>
+</div>
+<div class="flex-1 flex items-center justify-center font-label font-bold text-lg opacity-80">NOT</div>
+<!-- Sockets -->
+<div class="absolute -left-1 top-1/2 -translate-y-1/2 gate-socket active" title="Input"></div>
+<div class="absolute -right-1 top-1/2 -translate-y-1/2 gate-socket" title="Output"></div>
+</div>
+<!-- Input Switch -->
+<div class="absolute top-[30%] left-[15%] flex flex-col items-center gap-1 pointer-events-auto">
+<button class="w-8 h-8 rounded bg-primary-container border border-primary flex items-center justify-center text-primary shadow-lg">
+<span class="font-label font-bold text-xs">ON</span>
+</button>
+<span class="text-[8px] font-label text-secondary uppercase">Switch_A</span>
+</div>
+<div class="absolute top-[45%] left-[15%] flex flex-col items-center gap-1 pointer-events-auto">
+<button class="w-8 h-8 rounded bg-surface-container-highest border border-outline-variant flex items-center justify-center text-secondary shadow-lg">
+<span class="font-label font-bold text-xs">OFF</span>
+</button>
+<span class="text-[8px] font-label text-secondary uppercase">Switch_B</span>
+</div>
+</div>
+</main>
+<!-- Right Properties Panel -->
+<aside class="w-72 bg-surface-container-low border-l border-outline-variant/10 flex flex-col overflow-y-auto">
+<div class="h-10 px-4 flex items-center border-b border-outline-variant/10 bg-surface-container-high">
+<span class="font-['Space_Grotesk'] text-[11px] uppercase tracking-widest text-on-surface">Properties</span>
+<span class="ml-auto material-symbols-outlined text-secondary text-sm" data-icon="tune">tune</span>
+</div>
+<!-- Active Component Meta -->
+<div class="p-4 border-b border-outline-variant/10">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="developer_board">developer_board</span>
+<div>
+<div class="text-xs font-bold font-label">AND GATE</div>
+<div class="text-[9px] text-secondary">UUID: 8f2b-4491-a1b2</div>
+</div>
+</div>
+</div>
+<!-- Form Fields -->
+<div class="p-4 space-y-4">
+<div class="space-y-1">
+<label class="text-[9px] font-label font-bold uppercase tracking-wider text-secondary">Label</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded px-2 py-1.5 text-xs text-on-surface focus:border-primary focus:ring-0" type="text" value="AND_01"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="text-[9px] font-label font-bold uppercase tracking-wider text-secondary">Input A</label>
+<div class="flex items-center gap-2 bg-surface-container-lowest border border-outline-variant/20 rounded px-2 py-1.5">
+<div class="w-2 h-2 rounded-full bg-primary shadow-[0_0_4px_#4edea3]"></div>
+<span class="text-[10px] font-label">HIGH</span>
+</div>
+</div>
+<div class="space-y-1">
+<label class="text-[9px] font-label font-bold uppercase tracking-wider text-secondary">Input B</label>
+<div class="flex items-center gap-2 bg-surface-container-lowest border border-outline-variant/20 rounded px-2 py-1.5">
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+<span class="text-[10px] font-label">LOW</span>
+</div>
+</div>
+</div>
+<div class="space-y-1">
+<label class="text-[9px] font-label font-bold uppercase tracking-wider text-secondary">Output Signal</label>
+<div class="flex items-center gap-2 bg-surface-container-lowest border border-outline-variant/20 rounded px-2 py-1.5">
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+<span class="text-[10px] font-label">LOW (0)</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between">
+<label class="text-[9px] font-label font-bold uppercase tracking-wider text-secondary">Propagation Delay</label>
+<span class="text-[9px] font-label text-primary">12ms</span>
+</div>
+<input class="w-full accent-primary h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer" type="range"/>
+</div>
+</div>
+<!-- Signal Monitor -->
+<div class="mt-auto border-t border-outline-variant/10 p-4 bg-surface-container-lowest">
+<div class="flex items-center justify-between mb-3">
+<span class="text-[9px] font-label font-bold uppercase tracking-wider text-secondary">Signal Monitor</span>
+<span class="text-[9px] text-primary bg-primary/10 px-1 rounded">LIVE</span>
+</div>
+<!-- Mini Sparkline Simulation -->
+<div class="h-12 w-full flex items-end gap-[1px]">
+<div class="bg-primary w-2 h-2 opacity-30"></div>
+<div class="bg-primary w-2 h-2 opacity-30"></div>
+<div class="bg-primary w-2 h-8"></div>
+<div class="bg-primary w-2 h-8"></div>
+<div class="bg-primary w-2 h-8"></div>
+<div class="bg-primary w-2 h-2 opacity-30"></div>
+<div class="bg-primary w-2 h-2 opacity-30"></div>
+<div class="bg-primary w-2 h-8"></div>
+<div class="bg-primary w-2 h-8"></div>
+<div class="bg-primary w-2 h-2 opacity-30"></div>
+<div class="bg-primary w-2 h-2 opacity-30"></div>
+<div class="bg-primary w-2 h-8"></div>
+</div>
+</div>
+</aside>
+</div>
+<!-- Bottom Status Bar -->
+<footer class="h-6 bg-surface-container-lowest border-t border-outline-variant/10 flex items-center px-3 justify-between z-50">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+<span class="text-[9px] font-label text-on-surface-variant uppercase tracking-widest">Engine: Ready</span>
+</div>
+<div class="flex items-center gap-1.5 text-secondary">
+<span class="material-symbols-outlined text-[12px]" data-icon="schema">schema</span>
+<span class="text-[9px] font-label uppercase tracking-widest">Nodes: 14</span>
+</div>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant font-label text-[9px] uppercase tracking-widest">
+<span>Lat: 2ms</span>
+<span>Mem: 42.1MB</span>
+<span class="text-secondary">v1.0.4-stable</span>
+</div>
+</footer>
+</body></html>

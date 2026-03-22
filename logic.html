@@ -1,46 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logic Gate Simulator - Workspace</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>LOGIC_ENGINE_V1 - Workbench</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-surface": "#fcf9f8",
+                        "on-tertiary": "#490005",
+                        "secondary-fixed": "#dce2f3",
+                        "surface-container-high": "#1f2020",
+                        "surface-bright": "#2b2c2c",
+                        "outline-variant": "#484848",
+                        "secondary-dim": "#979ead",
+                        "error-container": "#7f2927",
+                        "primary": "#4edea3",
+                        "surface-container": "#191a1a",
+                        "surface-container-lowest": "#000000",
+                        "on-surface": "#e7e5e5",
+                        "inverse-primary": "#006d4a",
+                        "surface": "#0e0e0e",
+                        "on-error": "#490106",
+                        "on-tertiary-container": "#1f0001",
+                        "on-error-container": "#ff9993",
+                        "tertiary-fixed-dim": "#ec4142",
+                        "surface-container-low": "#131313",
+                        "on-primary": "#004a31",
+                        "on-secondary": "#19202c",
+                        "error-dim": "#bb5551",
+                        "on-primary-container": "#5ae9ac",
+                        "surface-variant": "#252626",
+                        "primary-container": "#005236",
+                        "outline": "#767575",
+                        "on-secondary-container": "#b9bfcf",
+                        "surface-container-highest": "#252626",
+                        "on-tertiary-fixed": "#000000",
+                        "tertiary-container": "#fd4e4d",
+                        "tertiary-dim": "#ff716a",
+                        "background": "#0e0e0e",
+                        "on-surface-variant": "#acabaa",
+                        "on-primary-fixed-variant": "#006947",
+                        "secondary-fixed-dim": "#ced4e4",
+                        "inverse-on-surface": "#565555",
+                        "surface-tint": "#4edea3",
+                        "on-primary-fixed": "#004930",
+                        "on-secondary-fixed-variant": "#555c69",
+                        "surface-dim": "#0e0e0e",
+                        "secondary": "#979ead",
+                        "on-tertiary-fixed-variant": "#3b0003",
+                        "primary-dim": "#3cd096",
+                        "error": "#ee7d77",
+                        "primary-fixed-dim": "#5fedb0",
+                        "primary-fixed": "#6ffbbe",
+                        "secondary-container": "#353c48",
+                        "tertiary": "#ff716a",
+                        "on-secondary-fixed": "#39404c",
+                        "tertiary-fixed": "#fd4e4d",
+                        "on-background": "#e7e5e5"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"]
+                    },
+                },
+            },
+        }
+    </script>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 18px;
+        }
+        .circuit-grid {
+            background-image: radial-gradient(circle, #252626 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .gate-socket {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #484848;
+            cursor: crosshair;
+            position: absolute;
+            z-index: 20;
+        }
+        .gate-socket:hover {
+            transform: scale(1.3);
+            background: #4edea3;
+        }
+        .gate-socket.active {
+            background: #4edea3;
+            box-shadow: 0 0 6px #4edea3;
+        }
+        
+        /* Node positioning and styling */
         .node {
             position: absolute;
-            background: white;
-            border: 2px solid #555;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: #252626;
+            border: 1px solid #484848;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
             min-width: 80px;
             text-align: center;
             user-select: none;
             cursor: grab;
             z-index: 10;
+            color: #e7e5e5;
         }
-        .node:active { cursor: grabbing; z-index: 20; }
-        .port {
-            width: 14px; height: 14px;
-            background: #cbd5e1; border: 2px solid #64748b;
-            border-radius: 50%;
-            position: absolute;
-            cursor: crosshair;
-        }
-        .port:hover { background: #3b82f6; border-color: #2563eb; transform: scale(1.2); }
-        .port.in { left: -7px; top: 50%; transform: translateY(-50%); }
-        .port.in-1 { left: -7px; top: 30%; transform: translateY(-50%); }
-        .port.in-2 { left: -7px; top: 70%; transform: translateY(-50%); }
-        .port.out { right: -7px; top: 50%; transform: translateY(-50%); }
+        .node:active { cursor: grabbing; z-index: 20; border-color: #4edea3; }
+        .node.selected { border-color: #4edea3; box-shadow: 0 0 0 1px #4edea3; }
         
-        .bg-grid {
-            background-size: 20px 20px;
-            background-image:
-              linear-gradient(to right, #e2e8f0 1px, transparent 1px),
-              linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
-        }
+        .port.in { left: -5px; top: 50%; transform: translateY(-50%); }
+        .port.in-1 { left: -5px; top: 30%; transform: translateY(-50%); }
+        .port.in-2 { left: -5px; top: 70%; transform: translateY(-50%); }
+        .port.out { right: -5px; top: 50%; transform: translateY(-50%); }
 
-        /* Phase 4: Wire Animations */
         @keyframes wireflow {
             to { stroke-dashoffset: -20; }
         }
@@ -50,60 +133,156 @@
         }
     </style>
 </head>
-<body class="flex flex-col h-screen bg-slate-50 font-sans">
-    <nav class="bg-blue-700 text-white p-4 shadow-md z-30 flex justify-between items-center">
-        <h1 class="text-xl font-bold">Logic Gate Simulator</h1>
-        <div class="flex gap-4">
-            <a href="learn.html" class="hover:text-blue-200 mt-1">Learn Modes</a>
-            <button onclick="clearCanvas()" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600 font-semibold shadow">Clear Workspace</button>
-            <!-- Phase 4 Export JSON Button -->
-            <button onclick="exportCircuit()" class="bg-indigo-500 px-3 py-1 rounded hover:bg-indigo-600 font-semibold shadow text-white">Export (.json)</button>
-            <button onclick="saveCircuit()" class="bg-green-500 px-3 py-1 rounded hover:bg-green-600 font-semibold shadow">Save to Browser</button>
-            <button onclick="loadCircuit()" class="bg-blue-500 px-3 py-1 rounded hover:bg-blue-600 font-semibold shadow">Load</button>
+<body class="bg-background text-on-surface font-body overflow-hidden h-screen flex flex-col">
+    <!-- TopNavBar -->
+    <nav class="bg-[#191a1a] flex justify-between items-center w-full px-3 h-12 border-b border-[#252626] z-50">
+        <div class="flex items-center gap-6">
+            <span class="font-['Space_Grotesk'] font-bold text-[#4edea3] tracking-tighter text-lg">LOGIC_ENGINE_V2</span>
+            <div class="flex items-center gap-1 font-['Inter'] text-sm tracking-tight">
+                <button onclick="window.location.href='learn.html'" class="px-3 py-1 text-[#4edea3] border-b-2 border-[#4edea3] hover:bg-[#252626] transition-colors">Learn Modes</button>
+                <button onclick="undo()" class="px-3 py-1 text-[#979ead] hover:bg-[#252626] transition-colors" title="Ctrl+Z">Undo</button>
+                <button onclick="redo()" class="px-3 py-1 text-[#979ead] hover:bg-[#252626] transition-colors" title="Ctrl+Y">Redo</button>
+                <button onclick="exportCircuit()" class="px-3 py-1 text-[#979ead] hover:bg-[#252626] transition-colors">Export JSON</button>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="evaluateGraph()" class="flex items-center gap-2 bg-primary text-on-primary px-3 py-1 rounded-sm text-xs font-bold active:opacity-80 transition-all">
+                <span class="material-symbols-outlined text-[16px]" data-icon="play_arrow" data-weight="fill">play_arrow</span>
+                Evaluate
+            </button>
+            <button onclick="clearCanvas()" class="flex items-center gap-2 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-sm text-xs font-bold active:opacity-80 transition-all">
+                <span class="material-symbols-outlined text-[16px]" data-icon="refresh">refresh</span>
+                Clear All
+            </button>
+            <div class="h-4 w-[1px] bg-outline-variant/30 mx-2"></div>
+            <div class="flex items-center gap-1">
+                <button onclick="saveCircuit()" class="p-1.5 text-secondary hover:bg-[#252626] hover:text-[#4edea3] rounded transition-colors" title="Save Circuit">
+                    <span class="material-symbols-outlined" data-icon="save">save</span>
+                </button>
+                <button onclick="loadCircuit()" class="p-1.5 text-secondary hover:bg-[#252626] hover:text-[#4edea3] rounded transition-colors" title="Load Circuit">
+                    <span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+                </button>
+            </div>
         </div>
     </nav>
-    <div class="flex flex-1 overflow-hidden relative">
-        <!-- Sidebar -->
-        <div class="w-64 bg-white border-r shadow-lg p-4 z-20 flex flex-col gap-2 overflow-y-auto">
-            <!-- Phase 4 Undo/Redo Visual Controls -->
-            <div class="flex gap-2 mb-2 w-full">
-                <button onclick="undo()" class="flex-1 p-2 border rounded bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold shadow-sm" title="Undo (Ctrl+Z)">⟲ Undo</button>
-                <button onclick="redo()" class="flex-1 p-2 border rounded bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold shadow-sm" title="Redo (Ctrl+Y)">Redo ⟳</button>
+    <div class="flex flex-1 overflow-hidden">
+        <!-- SideNavBar -->
+        <aside class="bg-[#131313] flex flex-col h-full w-64 border-r border-[#1f2020] z-40">
+            <div class="p-4 border-b border-outline-variant/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-surface-container-highest rounded flex items-center justify-center border border-outline-variant/20">
+                        <span class="material-symbols-outlined text-primary" data-icon="memory">memory</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-['Space_Grotesk'] text-[11px] uppercase tracking-widest text-primary">Workspace</span>
+                        <span class="font-['Space_Grotesk'] text-[9px] uppercase tracking-widest text-secondary">Editor Mode</span>
+                    </div>
+                </div>
             </div>
+            
+            <nav class="flex-1 py-4 overflow-y-auto">
+                <div class="px-4 py-2 bg-[#1f2020] text-[#4edea3] border-l-2 border-[#4edea3] flex items-center gap-3">
+                    <span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+                    <span class="font-['Space_Grotesk'] text-[11px] uppercase tracking-widest">Components</span>
+                </div>
+                
+                <div class="mt-4 px-4">
+                    <span class="text-[9px] text-on-surface-variant font-bold uppercase tracking-[0.2em] mb-2 block opacity-50">I / O Nodes</span>
+                    <div class="grid grid-cols-1 gap-1 mb-4">
+                        <div onclick="addNode('input')" class="flex items-center justify-between p-2 bg-surface-container-lowest border border-outline-variant/10 rounded group cursor-pointer hover:border-primary/40 transition-colors">
+                            <span class="text-xs font-label">SIGNAL INPUT</span>
+                            <span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors text-sm" data-icon="add">add</span>
+                        </div>
+                        <div onclick="addNode('output')" class="flex items-center justify-between p-2 bg-surface-container-lowest border border-outline-variant/10 rounded group cursor-pointer hover:border-primary/40 transition-colors">
+                            <span class="text-xs font-label">SIGNAL OUTPUT</span>
+                            <span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors text-sm" data-icon="add">add</span>
+                        </div>
+                    </div>
 
-            <h2 class="font-bold text-gray-700 mb-2 border-b pb-2">Components</h2>
-            <div class="text-sm text-gray-500 mb-2">Click to add to canvas. Wiring goes from right to left.</div>
-            
-            <button onclick="addNode('input')" class="p-2 border rounded bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-left pl-4">👉 Signal Input</button>
-            <button onclick="addNode('output')" class="p-2 border rounded bg-green-50 hover:bg-green-100 text-green-700 font-bold mb-4 text-left pl-4">🏁 Signal Output</button>
-            
-            <button onclick="addNode('AND')" class="p-2 border rounded hover:bg-gray-100 text-left pl-4 font-semibold">AND Gate</button>
-            <button onclick="addNode('OR')" class="p-2 border rounded hover:bg-gray-100 text-left pl-4 font-semibold">OR Gate</button>
-            <button onclick="addNode('NOT')" class="p-2 border rounded hover:bg-gray-100 text-left pl-4 font-semibold">NOT Gate</button>
-            <button onclick="addNode('XOR')" class="p-2 border rounded hover:bg-gray-100 text-left pl-4 font-semibold">XOR Gate</button>
-            <button onclick="addNode('NAND')" class="p-2 border rounded hover:bg-gray-100 text-left pl-4 font-semibold">NAND Gate</button>
-            <button onclick="addNode('NOR')" class="p-2 border rounded hover:bg-gray-100 text-left pl-4 font-semibold">NOR Gate</button>
-        </div>
+                    <span class="text-[9px] text-on-surface-variant font-bold uppercase tracking-[0.2em] mb-2 block opacity-50">Logic Gates</span>
+                    <div class="grid grid-cols-1 gap-1">
+                        <div onclick="addNode('AND')" class="flex items-center justify-between p-2 bg-surface-container-lowest border border-outline-variant/10 rounded group cursor-pointer hover:border-primary/40 transition-colors">
+                            <span class="text-xs font-label">AND GATE</span>
+                            <span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors text-sm" data-icon="add">add</span>
+                        </div>
+                        <div onclick="addNode('OR')" class="flex items-center justify-between p-2 bg-surface-container-lowest border border-outline-variant/10 rounded group cursor-pointer hover:border-primary/40 transition-colors">
+                            <span class="text-xs font-label">OR GATE</span>
+                            <span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors text-sm" data-icon="add">add</span>
+                        </div>
+                        <div onclick="addNode('NOT')" class="flex items-center justify-between p-2 bg-surface-container-lowest border border-outline-variant/10 rounded group cursor-pointer hover:border-primary/40 transition-colors">
+                            <span class="text-xs font-label">NOT GATE</span>
+                            <span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors text-sm" data-icon="add">add</span>
+                        </div>
+                        <div onclick="addNode('NAND')" class="flex items-center justify-between p-2 bg-surface-container-lowest border border-outline-variant/10 rounded group cursor-pointer hover:border-primary/40 transition-colors">
+                            <span class="text-xs font-label">NAND GATE</span>
+                            <span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors text-sm" data-icon="add">add</span>
+                        </div>
+                        <div onclick="addNode('NOR')" class="flex items-center justify-between p-2 bg-surface-container-lowest border border-outline-variant/10 rounded group cursor-pointer hover:border-primary/40 transition-colors">
+                            <span class="text-xs font-label">NOR GATE</span>
+                            <span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors text-sm" data-icon="add">add</span>
+                        </div>
+                        <div onclick="addNode('XOR')" class="flex items-center justify-between p-2 bg-surface-container-lowest border border-outline-variant/10 rounded group cursor-pointer hover:border-primary/40 transition-colors">
+                            <span class="text-xs font-label">XOR GATE</span>
+                            <span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors text-sm" data-icon="add">add</span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
         
-        <!-- Canvas -->
-        <div id="canvas" class="flex-1 relative bg-grid cursor-default overflow-hidden">
+        <!-- Main Workspace (Canvas) -->
+        <main id="canvas" class="flex-1 bg-surface relative circuit-grid overflow-hidden cursor-default" onclick="selectNode(null)">
+            <!-- Gutter Pattern -->
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary/20 pointer-events-none"></div>
+
             <svg id="wires" class="absolute top-0 left-0 w-full h-full pointer-events-none z-0"></svg>
             <div id="nodes-container" class="absolute top-0 left-0 w-full h-full pointer-events-auto z-10"></div>
-        </div>
+            
+        </main>
+
+        <!-- Right Properties Panel -->
+        <aside id="properties-panel" class="w-72 bg-surface-container-low border-l border-outline-variant/10 flex flex-col overflow-y-auto">
+            <div class="h-10 px-4 flex items-center border-b border-outline-variant/10 bg-surface-container-high">
+                <span class="font-['Space_Grotesk'] text-[11px] uppercase tracking-widest text-on-surface">Properties</span>
+                <span class="ml-auto material-symbols-outlined text-secondary text-sm" data-icon="tune">tune</span>
+            </div>
+            <div id="prop-content" class="p-4 text-secondary text-[11px] font-label">
+                Select a node on the canvas to view its properties.
+            </div>
+        </aside>
     </div>
+    
+    <!-- Bottom Status Bar -->
+    <footer class="h-6 bg-surface-container-lowest border-t border-outline-variant/10 flex items-center px-3 justify-between z-50">
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-1.5">
+                <div class="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                <span class="text-[9px] font-label text-on-surface-variant uppercase tracking-widest">Engine: Live</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-secondary">
+                <span class="material-symbols-outlined text-[12px]" data-icon="schema">schema</span>
+                <span id="node-count" class="text-[9px] font-label uppercase tracking-widest">Nodes: 0</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-4 text-on-surface-variant font-label text-[9px] uppercase tracking-widest">
+            <span class="text-secondary">Forge Terminal Active</span>
+        </div>
+    </footer>
 
     <script>
     const canvas = document.getElementById('canvas');
     const nodesContainer = document.getElementById('nodes-container');
     const svgWires = document.getElementById('wires');
+    const propContent = document.getElementById('prop-content');
+    const nodeCount = document.getElementById('node-count');
 
     let state = {
         nodes: [],
-        connections: [], // { fromNode, fromPort, toNode, toPort }
-        nextNodeId: 1
+        connections: [],
+        nextNodeId: 1,
+        selectedNodeId: null
     };
 
-    // Phase 4: History Stack Initialization
     let historyStack = [];
     let historyIndex = -1;
 
@@ -112,12 +291,14 @@
 
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
-
-    // Phase 4 Tools
-    // Ctrl+Z and Ctrl+Y listeners
     window.addEventListener('keydown', (e) => {
         if((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
         if((e.ctrlKey || e.metaKey) && e.key === 'y') { e.preventDefault(); redo(); }
+        if(e.key === 'Backspace' || e.key === 'Delete') {
+            if(state.selectedNodeId) {
+                deleteNode(state.selectedNodeId);
+            }
+        }
     });
 
     function saveHistory() {
@@ -129,28 +310,30 @@
         historyStack = historyStack.slice(0, historyIndex + 1);
         historyStack.push(stateCopy);
         historyIndex++;
+        updateStatus();
     }
 
     function undo() {
         if(historyIndex > 0) {
             historyIndex--;
-            const data = historyStack[historyIndex];
-            state.nodes = JSON.parse(JSON.stringify(data.nodes));
-            state.connections = JSON.parse(JSON.stringify(data.connections));
-            state.nextNodeId = data.nextNodeId;
-            renderNodes(); evaluateGraph();
+            loadStateFromHistory();
         }
     }
 
     function redo() {
         if(historyIndex < historyStack.length - 1) {
             historyIndex++;
-            const data = historyStack[historyIndex];
-            state.nodes = JSON.parse(JSON.stringify(data.nodes));
-            state.connections = JSON.parse(JSON.stringify(data.connections));
-            state.nextNodeId = data.nextNodeId;
-            renderNodes(); evaluateGraph();
+            loadStateFromHistory();
         }
+    }
+    
+    function loadStateFromHistory() {
+        const data = historyStack[historyIndex];
+        state.nodes = JSON.parse(JSON.stringify(data.nodes));
+        state.connections = JSON.parse(JSON.stringify(data.connections));
+        state.nextNodeId = data.nextNodeId;
+        state.selectedNodeId = null;
+        renderNodes(); evaluateGraph(); renderProps();
     }
 
     function exportCircuit() {
@@ -163,8 +346,9 @@
 
     function addNode(type) {
         const id = 'node_' + state.nextNodeId++;
-        const node = { id, type, x: 100 + Math.random()*100, y: 100 + Math.random()*100, value: 0 };
+        const node = { id, type, x: 300 + Math.random()*100, y: 150 + Math.random()*100, value: 0 };
         state.nodes.push(node);
+        selectNode(node.id);
         renderNodes();
         evaluateGraph();
         saveHistory();
@@ -174,36 +358,49 @@
         nodesContainer.innerHTML = '';
         state.nodes.forEach(node => {
             const el = document.createElement('div');
-            el.className = 'node';
+            el.className = 'node flex flex-col p-2 shadow-xl';
+            if (node.id === state.selectedNodeId) el.classList.add('selected');
             el.style.left = node.x + 'px';
             el.style.top = node.y + 'px';
             el.id = node.id;
             
-            let html = `<div class="bg-gray-200 py-1 px-4 text-xs font-bold rounded-t-lg border-b border-gray-400 capitalize">${node.type}</div>`;
+            let html = `<div class="flex justify-between items-center mb-1">
+                            <span class="text-[9px] font-label font-bold text-on-surface-variant tracking-tighter uppercase">${node.id}</span>
+                        </div>`;
+            
+            let isActive = node.value === 1;
+            let socketClass = isActive ? 'gate-socket active' : 'gate-socket';
             
             if (node.type === 'input') {
-                html += `<div class="p-2 flex justify-center"><button onclick="toggleInput('${node.id}')" class="w-10 h-10 ${node.value ? 'bg-green-500' : 'bg-red-500'} text-white text-lg font-bold rounded-full shadow hover:scale-105 transition-transform active:scale-95 cursor-pointer">${node.value}</button></div>`;
-                html += `<div class="port out" onmousedown="startWire(event, '${node.id}', 'out')"></div>`;
+                html += `<div class="flex-1 flex items-center justify-center font-label font-bold text-lg mb-2 mt-2">
+                             <button onclick="toggleInput('${node.id}', event)" class="w-8 h-8 rounded ${isActive ? 'bg-primary border-primary text-black' : 'bg-surface-container-highest border-outline-variant text-secondary'} border shadow flex items-center justify-center text-xs active:scale-95 transition-all outline-none">${isActive ? 'ON' : 'OFF'}</button>
+                         </div>`;
+                html += `<div class="${socketClass} port out" onmousedown="startWire(event, '${node.id}', 'out')" title="Output"></div>`;
             } 
             else if (node.type === 'output') {
-                html += `<div class="p-2 flex justify-center"><div class="w-10 h-10 ${node.value ? 'bg-green-500' : 'bg-red-500'} text-white text-lg font-bold rounded-full shadow flex items-center justify-center">${node.value}</div></div>`;
-                html += `<div class="port in" onmousedown="startWire(event, '${node.id}', 'in')" onmouseup="endWire(event, '${node.id}', 'in')"></div>`;
+                html += `<div class="flex-1 flex items-center justify-center font-label font-bold text-lg mb-2 mt-2">
+                             <div class="w-10 h-10 rounded border ${isActive ? 'bg-primary text-black border-primary' : 'bg-surface-container-lowest border-outline-variant text-secondary'} shadow flex items-center justify-center text-xs tracking-widest font-bold transition-colors">${isActive ? 'HIGH' : 'LOW'}</div>
+                         </div>`;
+                html += `<div class="gate-socket port in" onmousedown="startWire(event, '${node.id}', 'in')" onmouseup="endWire(event, '${node.id}', 'in')" title="Input"></div>`;
             }
-            else if (node.type === 'NOT') {
-                html += `<div class="p-4 text-lg font-bold">NOT</div>`;
-                html += `<div class="port in" onmousedown="startWire(event, '${node.id}', 'in')" onmouseup="endWire(event, '${node.id}', 'in')"></div>`;
-                html += `<div class="port out" onmousedown="startWire(event, '${node.id}', 'out')"></div>`;
-            }
-            else { // Logic gates with 2 inputs
-                html += `<div class="p-4 text-lg font-bold">${node.type}</div>`;
-                html += `<div class="port in-1" onmousedown="startWire(event, '${node.id}', 'in-1')" onmouseup="endWire(event, '${node.id}', 'in-1')"></div>`;
-                html += `<div class="port in-2" onmousedown="startWire(event, '${node.id}', 'in-2')" onmouseup="endWire(event, '${node.id}', 'in-2')"></div>`;
-                html += `<div class="port out" onmousedown="startWire(event, '${node.id}', 'out')"></div>`;
+            else {
+                html += `<div class="flex-1 flex items-center justify-center w-16 h-8 font-label font-bold text-lg opacity-90 mt-1 mb-1 tracking-widest">${node.type}</div>`;
+                if(node.type === 'NOT') {
+                    html += `<div class="gate-socket port in" onmousedown="startWire(event, '${node.id}', 'in')" onmouseup="endWire(event, '${node.id}', 'in')" title="Input"></div>`;
+                } else {
+                    html += `<div class="gate-socket port in-1" onmousedown="startWire(event, '${node.id}', 'in-1')" onmouseup="endWire(event, '${node.id}', 'in-1')" title="Input A"></div>`;
+                    html += `<div class="gate-socket port in-2" onmousedown="startWire(event, '${node.id}', 'in-2')" onmouseup="endWire(event, '${node.id}', 'in-2')" title="Input B"></div>`;
+                }
+                html += `<div class="${socketClass} port out" onmousedown="startWire(event, '${node.id}', 'out')" title="Output"></div>`;
             }
             
             el.innerHTML = html;
+            
             el.onmousedown = (e) => {
+                e.stopPropagation();
                 if(e.target.classList.contains('port') || e.target.tagName==='BUTTON') return;
+                e.preventDefault();
+                selectNode(node.id);
                 dragging.node = node;
                 dragging.hasMoved = false;
                 const rect = el.getBoundingClientRect();
@@ -211,18 +408,67 @@
                 dragging.offsetY = e.clientY - rect.top;
             };
             
-            // Allow deleting nodes via right click
-            el.oncontextmenu = (e) => {
-                e.preventDefault();
-                deleteNode(node.id);
-            };
-            
             nodesContainer.appendChild(el);
         });
         renderWires();
+        updateStatus();
     }
 
-    function toggleInput(id) {
+    function selectNode(id) {
+        state.selectedNodeId = id;
+        document.querySelectorAll('.node').forEach(el => {
+            if (el.id === id) {
+                el.classList.add('selected');
+            } else {
+                el.classList.remove('selected');
+            }
+        });
+        renderProps();
+    }
+
+    function renderProps() {
+        if (!state.selectedNodeId) {
+            propContent.innerHTML = `Select a node on the canvas to view its properties.`;
+            return;
+        }
+        const node = state.nodes.find(n => n.id === state.selectedNodeId);
+        if(!node) return;
+        
+        let signalLabel = node.value === 1 ? 'HIGH (1)' : 'LOW (0)';
+        let signalDot = node.value === 1 ? 'bg-primary shadow-[0_0_4px_#4edea3]' : 'bg-outline-variant';
+
+        let html = `
+            <div class="border-b border-outline-variant/10 pb-4 mb-4">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-lg" data-icon="developer_board">developer_board</span>
+                    <div>
+                        <div class="text-xs font-bold font-label">${node.type} NODE</div>
+                        <div class="text-[9px] text-secondary">ID: ${node.id}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div class="space-y-1">
+                    <label class="text-[9px] font-label font-bold uppercase tracking-wider text-secondary">Current State</label>
+                    <div class="flex items-center gap-2 bg-surface-container-lowest border border-outline-variant/20 rounded px-2 py-1.5">
+                        <div class="w-2 h-2 rounded-full ${signalDot}"></div>
+                        <span class="text-[10px] font-label text-on-surface">${signalLabel}</span>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-outline-variant/10">
+                    <button onclick="deleteNode('${node.id}')" class="w-full py-1.5 bg-error-container/20 text-error border border-error/50 rounded hover:bg-error-container/50 transition-colors uppercase tracking-widest text-[9px] font-bold">
+                        Delete Node
+                    </button>
+                </div>
+            </div>
+        `;
+        propContent.innerHTML = html;
+    }
+
+    function toggleInput(id, e) {
+        e.stopPropagation();
+        selectNode(id);
         const node = state.nodes.find(n => n.id === id);
         if(node) {
             node.value = node.value === 1 ? 0 : 1;
@@ -247,7 +493,6 @@
     function endWire(e, nodeId, port) {
         e.stopPropagation();
         if(wiring.active && wiring.fromNode !== nodeId) {
-            // Validate: Only connect 'out' to 'in'
             if ((wiring.fromPort.startsWith('out') && port.startsWith('in')) || 
                 (wiring.fromPort.startsWith('in') && port.startsWith('out'))) {
                 
@@ -255,10 +500,9 @@
                 let inNode = wiring.fromPort.startsWith('in') ? wiring.fromNode : nodeId;
                 let inPort = wiring.fromPort.startsWith('in') ? wiring.fromPort : port;
                 
-                // Clear existing connection to this specific input port so it acts as a plug
                 state.connections = state.connections.filter(c => !(c.toNode === inNode && c.toPort === inPort));
-                
                 state.connections.push({ fromNode: outNode, fromPort: 'out', toNode: inNode, toPort: inPort });
+                
                 evaluateGraph();
                 saveHistory();
             }
@@ -273,8 +517,11 @@
             const canvasRect = canvas.getBoundingClientRect();
             dragging.node.x = e.clientX - canvasRect.left - dragging.offsetX;
             dragging.node.y = e.clientY - canvasRect.top - dragging.offsetY;
-            document.getElementById(dragging.node.id).style.left = dragging.node.x + 'px';
-            document.getElementById(dragging.node.id).style.top = dragging.node.y + 'px';
+            const el = document.getElementById(dragging.node.id);
+            if(el) {
+                el.style.left = dragging.node.x + 'px';
+                el.style.top = dragging.node.y + 'px';
+            }
             renderWires();
         } else if (wiring.active) {
             const canvasRect = canvas.getBoundingClientRect();
@@ -286,9 +533,7 @@
 
     function onMouseUp() {
         if (dragging.node) {
-            if (dragging.hasMoved) {
-                saveHistory();
-            }
+            if (dragging.hasMoved) saveHistory();
             dragging.node = null;
         }
         if(wiring.active) {
@@ -300,8 +545,10 @@
     function deleteNode(id) {
         state.nodes = state.nodes.filter(n => n.id !== id);
         state.connections = state.connections.filter(c => c.fromNode !== id && c.toNode !== id);
+        if(state.selectedNodeId === id) state.selectedNodeId = null;
         renderNodes();
         evaluateGraph();
+        renderProps();
         saveHistory();
     }
 
@@ -310,7 +557,6 @@
         if(!el) return null;
         const portEl = el.querySelector(`.port.${port}`);
         if(!portEl) return null;
-        
         const rect = portEl.getBoundingClientRect();
         const canvasRect = canvas.getBoundingClientRect();
         return {
@@ -322,7 +568,7 @@
     function drawBezier(x1, y1, x2, y2, color, isFlowing) {
         const offset = Math.abs(x2 - x1) * 0.6 + 20;
         const className = isFlowing ? 'class="wire-active"' : '';
-        return `<path ${className} d="M ${x1} ${y1} C ${x1 + offset} ${y1}, ${x2 - offset} ${y2}, ${x2} ${y2}" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" />`;
+        return `<path ${className} d="M ${x1} ${y1} C ${x1 + offset} ${y1}, ${x2 - offset} ${y2}, ${x2} ${y2}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" />`;
     }
 
     function renderWires(tempX, tempY) {
@@ -331,26 +577,23 @@
             const p1 = getPortPosition(conn.fromNode, 'out');
             const p2 = getPortPosition(conn.toNode, conn.toPort);
             if(p1 && p2) {
-                // Find signal value to color wire dynamically
                 const sourceNode = state.nodes.find(n => n.id === conn.fromNode);
                 const isHigh = sourceNode && sourceNode.value === 1;
-                const color = isHigh ? '#22c55e' : '#cbd5e1'; // Green for 1, Gray for 0
+                const color = isHigh ? '#4edea3' : '#484848';
                 svg += drawBezier(p1.x, p1.y, p2.x, p2.y, color, isHigh);
             }
         });
         
         if (wiring.active && tempX !== undefined) {
-            svg += drawBezier(wiring.startX, wiring.startY, tempX, tempY, '#3b82f6', false);
+            svg += drawBezier(wiring.startX, wiring.startY, tempX, tempY, '#979ead', false);
         }
         svgWires.innerHTML = svg;
     }
 
     function evaluateGraph() {
-        // Recursive / multi-pass evaluation to properly settle combinational logic gates
         for(let iter=0; iter<state.nodes.length; iter++) {
             state.nodes.forEach(node => {
-                if(node.type === 'input') return; // Handled by button toggles
-                
+                if(node.type === 'input') return;
                 const inConns = state.connections.filter(c => c.toNode === node.id);
                 
                 if(node.type === 'output' || node.type === 'NOT') {
@@ -362,7 +605,7 @@
                     }
                     if(node.type === 'output') node.value = val;
                     if(node.type === 'NOT') node.value = val === 0 ? 1 : 0;
-                } else { // 2-input gates
+                } else {
                     const c1 = inConns.find(c => c.toPort === 'in-1');
                     const c2 = inConns.find(c => c.toPort === 'in-2');
                     let v1 = 0, v2 = 0;
@@ -379,57 +622,65 @@
                 }
             });
         }
-        renderNodes(); // Triggers a class update on UI to show colors
+        renderNodes();
+        if(state.selectedNodeId) renderProps();
     }
 
     function clearCanvas() {
         state.nodes = [];
         state.connections = [];
         state.nextNodeId = 1;
+        state.selectedNodeId = null;
         renderNodes();
+        renderProps();
         saveHistory();
     }
 
     function saveCircuit() {
-        localStorage.setItem("logic_canvas", JSON.stringify(state));
+        localStorage.setItem("logic_canvas_v2", JSON.stringify(state));
         alert("Circuit successfully saved!");
     }
 
     function loadCircuit() {
-        const savedInfo = localStorage.getItem("logic_canvas");
+        const savedInfo = localStorage.getItem("logic_canvas_v2");
         if(savedInfo) {
             state = JSON.parse(savedInfo);
+            state.selectedNodeId = null;
             renderNodes();
             evaluateGraph();
             saveHistory();
         } else {
-            alert("No saved circuit found. Make sure to click Save first!");
+            alert("No saved circuit found.");
         }
     }
-    
-    // Auto-spawn some initial nodes to show how it works
+
+    function updateStatus() {
+        nodeCount.innerText = `Nodes: ${state.nodes.length}`;
+    }
+
+    // Auto-spawn initial tutorial logic
     if(state.nodes.length === 0) {
         addNode('input');
         addNode('input');
         addNode('AND');
         addNode('output');
         
-        // Offset them automatically for the showcase
-        state.nodes[0].x = 50; state.nodes[0].y = 100;
-        state.nodes[1].x = 50; state.nodes[1].y = 250;
-        state.nodes[2].x = 300; state.nodes[2].y = 150;
-        state.nodes[3].x = 500; state.nodes[3].y = 150;
+        state.nodes[0].x = 100; state.nodes[0].y = 80;
+        state.nodes[1].x = 100; state.nodes[1].y = 200;
+        state.nodes[2].x = 350; state.nodes[2].y = 120;
+        state.nodes[3].x = 600; state.nodes[3].y = 135;
         
-        // Setup initial wires to showcase it
         state.connections.push({ fromNode: state.nodes[0].id, fromPort: 'out', toNode: state.nodes[2].id, toPort: 'in-1' });
         state.connections.push({ fromNode: state.nodes[1].id, fromPort: 'out', toNode: state.nodes[2].id, toPort: 'in-2' });
         state.connections.push({ fromNode: state.nodes[2].id, fromPort: 'out', toNode: state.nodes[3].id, toPort: 'in' });
 
         renderNodes();
         evaluateGraph();
-
-        // Initialize history with initial state
         saveHistory();
+        
+        // Deselect immediately so it looks clean initially
+        state.selectedNodeId = null; 
+        renderNodes(); renderProps();
     }
     </script>
 </body>
