@@ -3,188 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logic Gates</title>
+    <title>Logic Gate Simulator - Workspace</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+Tamma+2:wght@600&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'baloo': ['"Baloo Tamma 2"', 'cursive'],
-                    },
-                    colors: {
-                        'ocean': {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            300: '#7dd3fc',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
-                        }
-                    }
-                }
-            }
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+        .node {
+            position: absolute;
+            background: white;
+            border: 2px solid #555;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            min-width: 80px;
+            text-align: center;
+            user-select: none;
+            cursor: grab;
+            z-index: 10;
         }
-    </script>
+        .node:active { cursor: grabbing; z-index: 20; }
+        .port {
+            width: 14px; height: 14px;
+            background: #cbd5e1; border: 2px solid #64748b;
+            border-radius: 50%;
+            position: absolute;
+            cursor: crosshair;
+        }
+        .port:hover { background: #3b82f6; border-color: #2563eb; transform: scale(1.2); }
+        .port.in { left: -7px; top: 50%; transform: translateY(-50%); }
+        .port.in-1 { left: -7px; top: 30%; transform: translateY(-50%); }
+        .port.in-2 { left: -7px; top: 70%; transform: translateY(-50%); }
+        .port.out { right: -7px; top: 50%; transform: translateY(-50%); }
+        
+        .bg-grid {
+            background-size: 20px 20px;
+            background-image:
+              linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+              linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+        }
+    </style>
 </head>
-<body class="font-baloo bg-gradient-to-br from-ocean-100 to-ocean-200 min-h-screen flex flex-col justify-center items-center">
-    <div class="container px-4 py-8">
-        <div class="text-center mb-12">
-            <h1 class="text-6xl font-bold text-ocean-800 mb-4 drop-shadow-lg animate__animated animate__fadeInDown">Interactive Logic Gate Simulator</h1>
-            <p class="text-ocean-600 text-xl animate__animated animate__fadeIn">Experiment with fundamental logic gates!</p>
+<body class="flex flex-col h-screen bg-slate-50 font-sans">
+    <nav class="bg-blue-700 text-white p-4 shadow-md z-30 flex justify-between items-center">
+        <h1 class="text-xl font-bold">Logic Gate Simulator</h1>
+        <div class="flex gap-4">
+            <a href="learn.html" class="hover:text-blue-200 mt-1">Learn Modes</a>
+            <button onclick="clearCanvas()" class="bg-red-500 px-3 py-1 rounded hover:bg-red-600 font-semibold shadow">Clear Workspace</button>
+            <button onclick="saveCircuit()" class="bg-green-500 px-3 py-1 rounded hover:bg-green-600 font-semibold shadow">Save Circuit</button>
+            <button onclick="loadCircuit()" class="bg-blue-500 px-3 py-1 rounded hover:bg-blue-600 font-semibold shadow">Load Circuit</button>
         </div>
-
-        <div class="gate-box flex flex-col md:flex-row items-center justify-around gap-12 p-10 animate__animated animate__fadeInUp bg-gradient-to-br from-ocean-50 to-ocean-100 shadow-xl border border-ocean-200">
-            <div class="flex flex-col items-center">
-                <label for="input1" class="label-text text-ocean-800">Input 1</label>
-                <select id="input1" class="input-select border-ocean-400 text-ocean-700 shadow-md hover:shadow-lg focus:ring-ocean-500">
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                </select>
-            </div>
-        
-            <div class="flex flex-col items-center">
-                <label for="gateType" class="label-text text-ocean-800">Gate Type</label>
-                <select id="gateType" class="gate-select border-ocean-400 text-ocean-700 shadow-md hover:shadow-lg focus:ring-ocean-500">
-                    <option value="and">AND</option>
-                    <option value="or">OR</option>
-                    <option value="xor">XOR</option>
-                    <option value="not">NOT</option>
-                    <option value="nand">NAND</option>
-                    <option value="nor">NOR</option>
-                </select>
-            </div>
-        
-            <div id="input2Container" class="flex flex-col items-center">
-                <label for="input2" class="label-text text-ocean-800">Input 2</label>
-                <select id="input2" class="input-select border-ocean-400 text-ocean-700 shadow-md hover:shadow-lg focus:ring-ocean-500">
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                </select>
-            </div>
-        
-            <button onclick="gateOutput()" class="calculate-button bg-gradient-to-r from-ocean-500 to-ocean-700 hover:from-ocean-600 hover:to-ocean-800 shadow-lg active:scale-95">
-                Calculate
-            </button>
-        
-            <div class="flex flex-col items-center">
-                <label for="output" class="label-text text-ocean-800">Result</label>
-                <input id="output" class="output-field border-ocean-500 text-ocean-800 shadow-inner" value="?" readonly>
-            </div>
+    </nav>
+    <div class="flex flex-1 overflow-hidden relative">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white border-r shadow-lg p-4 z-20 flex flex-col gap-2 overflow-y-auto">
+            <h2 class="font-bold text-gray-700 mb-2 border-b pb-2">Components</h2>
+            <div class="text-sm text-gray-500 mb-2">Click to add to canvas. Wiring goes from right ports to left ports.</div>
+            
+            <button onclick="addNode('input')" class="p-2 border rounded bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-left pl-4">👉 Signal Input</button>
+            <button onclick="addNode('output')" class="p-2 border rounded bg-green-50 hover:bg-green-100 text-green-700 font-bold mb-4 text-left pl-4">🏁 Signal Output</button>
+            
+            <button onclick="addNode('AND')" class="p-2 border rounded hover:bg-gray-100 text-left pl-4 font-semibold">AND Gate</button>
+            <button onclick="addNode('OR')" class="p-2 border rounded hover:bg-gray-100 text-left pl-4 font-semibold">OR Gate</button>
+            <button onclick="addNode('NOT')" class="p-2 border rounded hover:bg-gray-100 text-left pl-4 font-semibold">NOT Gate</button>
+            <button onclick="addNode('XOR')" class="p-2 border rounded hover:bg-gray-100 text-left pl-4 font-semibold">XOR Gate</button>
+            <button onclick="addNode('NAND')" class="p-2 border rounded hover:bg-gray-100 text-left pl-4 font-semibold">NAND Gate</button>
+            <button onclick="addNode('NOR')" class="p-2 border rounded hover:bg-gray-100 text-left pl-4 font-semibold">NOR Gate</button>
         </div>
         
-        <style>
-            .gate-box {
-                min-width: 650px; /* Increased minimum width */
-                border-radius: 1.25rem; /* Slightly more rounded */
-            }
-            .label-text {
-                font-weight: 600; /* Slightly bolder label */
-                margin-bottom: 0.5rem; /* Adjusted margin */
-            }
-            .input-select, .gate-select, .output-field {
-                border-width: 2px;
-                border-style: solid;
-                border-radius: 0.75rem;
-                padding: 0.5rem; /* Added padding */
-                font-size: 1.5rem; /* Slightly smaller font */
-                text-align: center;
-                transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            }
-            .input-select:focus, .gate-select:focus, .output-field:focus {
-                outline: none;
-                box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.5); /* Ocean focus ring */
-            }
-            .calculate-button {
-                font-size: 1.25rem; /* Adjusted font size */
-                padding: 0.75rem 1.5rem; /* Adjusted padding */
-                border-radius: 0.75rem;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* More pronounced shadow */
-                transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
-            }
-            .calculate-button:hover {
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Even stronger hover shadow */
-            }
-            .output-field {
-                font-weight: bold; /* Bold output text */
-            }
-        </style>
-
-        <div class="mt-12 text-ocean-700">
-            <h2 class="text-3xl font-semibold mb-4">Understanding Logic Gates</h2>
-            <p class="mb-4">
-                Logic gates are the fundamental building blocks of digital circuits. They perform basic logical operations essential for computation. This simulator allows you to explore the behavior of common logic gates by selecting inputs and observing the output.
-            </p>
-
-            <h3 class="text-2xl font-semibold mb-2">Available Gates:</h3>
-            <ul class="list-disc list-inside mb-4">
-                <li><strong>AND:</strong> The output is 1 only if both inputs are 1. Otherwise, the output is 0.</li>
-                <li><strong>OR:</strong> The output is 1 if at least one of the inputs is 1. The output is 0 only if both inputs are 0.</li>
-                <li><strong>XOR (Exclusive OR):</strong> The output is 1 if the inputs are different (one is 0 and the other is 1). The output is 0 if the inputs are the same.</li>
-                <li><strong>NOT:</strong> This is a unary gate (takes only one input). The output is the inverse of the input. If the input is 1, the output is 0, and vice versa.</li>
-                <li><strong>NAND (Not AND):</strong> The output is the inverse of the AND gate. It's 0 only if both inputs are 1. Otherwise, the output is 1.</li>
-                <li><strong>NOR (Not OR):</strong> The output is the inverse of the OR gate. It's 1 only if both inputs are 0. Otherwise, the output is 0.</li>
-            </ul>
-
-            <h3 class="text-2xl font-semibold mb-2">How to Use:</h3>
-            <ol class="list-decimal list-inside mb-4">
-                <li>Select the desired value (0 or 1) for Input 1.</li>
-                <li>If the selected gate (AND, OR, XOR, NAND, NOR) requires two inputs, select the value for Input 2. The Input 2 field will be hidden if the NOT gate is selected.</li>
-                <li>Choose the type of logic gate you want to simulate from the "Gate Type" dropdown.</li>
-                <li>Click the "Calculate" button to see the output of the logic gate based on your selections.</li>
-                <li>The "Result" field will display the output (0 or 1).</li>
-            </ol>
+        <!-- Canvas -->
+        <div id="canvas" class="flex-1 relative bg-grid cursor-default overflow-hidden">
+            <svg id="wires" class="absolute top-0 left-0 w-full h-full pointer-events-none z-0"></svg>
+            <div id="nodes-container" class="absolute top-0 left-0 w-full h-full pointer-events-auto z-10"></div>
         </div>
     </div>
 
     <script>
-        const input2Container = document.getElementById("input2Container");
-    const input2Select = document.getElementById("input2");
-    const gateTypeSelect = document.getElementById("gateType");
+    const canvas = document.getElementById('canvas');
+    const nodesContainer = document.getElementById('nodes-container');
+    const svgWires = document.getElementById('wires');
 
-    gateTypeSelect.addEventListener('change', function() {
-        if (this.value === 'not') {
-            input2Container.style.display = 'none';
-        } else {
-            input2Container.style.display = 'flex';
-        }
-    });
+    let state = {
+        nodes: [],
+        connections: [], // { fromNode, fromPort, toNode, toPort }
+        nextNodeId: 1
+    };
 
-    function gateOutput() {
-        var i1 = parseInt(document.getElementById("input1").value);
-        var i2 = parseInt(document.getElementById("input2").value);
-        var gt = document.getElementById("gateType").value;
-        var o;
+    let dragging = { node: null, offsetX: 0, offsetY: 0 };
+    let wiring = { active: false, fromNode: null, fromPort: null, startX: 0, startY: 0 };
 
-        switch(gt) {
-            case "and": o = i1 & i2; break;
-            case "or": o = i1 | i2; break;
-            case "xor": o = i1 ^ i2; break;
-            case "not": o = i1 == 0 ? 1 : 0; i2 = null; break; // Ignore i2 for NOT gate
-            case "nand": o = !(i1 & i2) ? 1 : 0; break;
-            case "nor": o = !(i1 | i2) ? 1 : 0; break;
-            default: o = "?";
-        }
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
 
-        const output = document.getElementById("output");
-        output.value = o;
-
-        // Add animation effect
-        output.classList.remove('animate__pulse'); // Remove previous animation class
-        void output.offsetWidth; // Trigger reflow to allow animation to restart
-        output.classList.add('animate__pulse');
+    function addNode(type) {
+        const id = 'node_' + state.nextNodeId++;
+        const node = { id, type, x: 100 + Math.random()*100, y: 100 + Math.random()*100, value: 0 };
+        state.nodes.push(node);
+        renderNodes();
+        evaluateGraph();
     }
 
-    // Initialize the visibility of Input 2 based on the default gate type
-    if (gateTypeSelect.value === 'not') {
-        input2Container.style.display = 'none';
+    function renderNodes() {
+        nodesContainer.innerHTML = '';
+        state.nodes.forEach(node => {
+            const el = document.createElement('div');
+            el.className = 'node';
+            el.style.left = node.x + 'px';
+            el.style.top = node.y + 'px';
+            el.id = node.id;
+            
+            let html = `<div class="bg-gray-200 py-1 px-4 text-xs font-bold rounded-t-lg border-b border-gray-400 capitalize">${node.type}</div>`;
+            
+            if (node.type === 'input') {
+                html += `<div class="p-2 flex justify-center"><button onclick="toggleInput('${node.id}')" class="w-10 h-10 ${node.value ? 'bg-green-500' : 'bg-red-500'} text-white text-lg font-bold rounded-full shadow hover:scale-105 transition-transform active:scale-95 cursor-pointer">${node.value}</button></div>`;
+                html += `<div class="port out" onmousedown="startWire(event, '${node.id}', 'out')"></div>`;
+            } 
+            else if (node.type === 'output') {
+                html += `<div class="p-2 flex justify-center"><div class="w-10 h-10 ${node.value ? 'bg-green-500' : 'bg-red-500'} text-white text-lg font-bold rounded-full shadow flex items-center justify-center">${node.value}</div></div>`;
+                html += `<div class="port in" onmousedown="startWire(event, '${node.id}', 'in')" onmouseup="endWire(event, '${node.id}', 'in')"></div>`;
+            }
+            else if (node.type === 'NOT') {
+                html += `<div class="p-4 text-lg font-bold">NOT</div>`;
+                html += `<div class="port in" onmousedown="startWire(event, '${node.id}', 'in')" onmouseup="endWire(event, '${node.id}', 'in')"></div>`;
+                html += `<div class="port out" onmousedown="startWire(event, '${node.id}', 'out')"></div>`;
+            }
+            else { // Logic gates with 2 inputs
+                html += `<div class="p-4 text-lg font-bold">${node.type}</div>`;
+                html += `<div class="port in-1" onmousedown="startWire(event, '${node.id}', 'in-1')" onmouseup="endWire(event, '${node.id}', 'in-1')"></div>`;
+                html += `<div class="port in-2" onmousedown="startWire(event, '${node.id}', 'in-2')" onmouseup="endWire(event, '${node.id}', 'in-2')"></div>`;
+                html += `<div class="port out" onmousedown="startWire(event, '${node.id}', 'out')"></div>`;
+            }
+            
+            el.innerHTML = html;
+            el.onmousedown = (e) => {
+                if(e.target.classList.contains('port') || e.target.tagName==='BUTTON') return;
+                dragging.node = node;
+                const rect = el.getBoundingClientRect();
+                dragging.offsetX = e.clientX - rect.left;
+                dragging.offsetY = e.clientY - rect.top;
+            };
+            
+            // Allow deleting nodes via right click
+            el.oncontextmenu = (e) => {
+                e.preventDefault();
+                deleteNode(node.id);
+            };
+            
+            nodesContainer.appendChild(el);
+        });
+        renderWires();
+    }
+
+    function toggleInput(id) {
+        const node = state.nodes.find(n => n.id === id);
+        if(node) {
+            node.value = node.value === 1 ? 0 : 1;
+            renderNodes();
+            evaluateGraph();
+        }
+    }
+
+    function startWire(e, nodeId, port) {
+        e.stopPropagation();
+        e.preventDefault();
+        const rect = e.target.getBoundingClientRect();
+        const canvasRect = canvas.getBoundingClientRect();
+        wiring.active = true;
+        wiring.fromNode = nodeId;
+        wiring.fromPort = port;
+        wiring.startX = rect.left + rect.width/2 - canvasRect.left;
+        wiring.startY = rect.top + rect.height/2 - canvasRect.top;
+    }
+
+    function endWire(e, nodeId, port) {
+        e.stopPropagation();
+        if(wiring.active && wiring.fromNode !== nodeId) {
+            // Validate: Only connect 'out' to 'in'
+            if ((wiring.fromPort.startsWith('out') && port.startsWith('in')) || 
+                (wiring.fromPort.startsWith('in') && port.startsWith('out'))) {
+                
+                let outNode = wiring.fromPort.startsWith('out') ? wiring.fromNode : nodeId;
+                let inNode = wiring.fromPort.startsWith('in') ? wiring.fromNode : nodeId;
+                let inPort = wiring.fromPort.startsWith('in') ? wiring.fromPort : port;
+                
+                // Clear existing connection to this specific input port so it acts as a plug
+                state.connections = state.connections.filter(c => !(c.toNode === inNode && c.toPort === inPort));
+                
+                state.connections.push({ fromNode: outNode, fromPort: 'out', toNode: inNode, toPort: inPort });
+                evaluateGraph();
+            }
+        }
+        wiring.active = false;
+        renderWires();
+    }
+
+    function onMouseMove(e) {
+        if (dragging.node) {
+            const canvasRect = canvas.getBoundingClientRect();
+            dragging.node.x = e.clientX - canvasRect.left - dragging.offsetX;
+            dragging.node.y = e.clientY - canvasRect.top - dragging.offsetY;
+            document.getElementById(dragging.node.id).style.left = dragging.node.x + 'px';
+            document.getElementById(dragging.node.id).style.top = dragging.node.y + 'px';
+            renderWires();
+        } else if (wiring.active) {
+            const canvasRect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - canvasRect.left;
+            const mouseY = e.clientY - canvasRect.top;
+            renderWires(mouseX, mouseY);
+        }
+    }
+
+    function onMouseUp() {
+        if (dragging.node) {
+            dragging.node = null;
+        }
+        if(wiring.active) {
+            wiring.active = false;
+            renderWires();
+        }
+    }
+
+    function deleteNode(id) {
+        state.nodes = state.nodes.filter(n => n.id !== id);
+        state.connections = state.connections.filter(c => c.fromNode !== id && c.toNode !== id);
+        renderNodes();
+        evaluateGraph();
+    }
+
+    function getPortPosition(nodeId, port) {
+        const el = document.getElementById(nodeId);
+        if(!el) return null;
+        const portEl = el.querySelector(`.port.${port}`);
+        if(!portEl) return null;
+        
+        const rect = portEl.getBoundingClientRect();
+        const canvasRect = canvas.getBoundingClientRect();
+        return {
+            x: rect.left + rect.width/2 - canvasRect.left,
+            y: rect.top + rect.height/2 - canvasRect.top
+        };
+    }
+
+    function drawBezier(x1, y1, x2, y2, color) {
+        const offset = Math.abs(x2 - x1) * 0.6 + 20;
+        return `<path d="M ${x1} ${y1} C ${x1 + offset} ${y1}, ${x2 - offset} ${y2}, ${x2} ${y2}" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" />`;
+    }
+
+    function renderWires(tempX, tempY) {
+        let svg = '';
+        state.connections.forEach(conn => {
+            const p1 = getPortPosition(conn.fromNode, 'out');
+            const p2 = getPortPosition(conn.toNode, conn.toPort);
+            if(p1 && p2) {
+                // Find signal value to color wire dynamically
+                const sourceNode = state.nodes.find(n => n.id === conn.fromNode);
+                const color = sourceNode && sourceNode.value === 1 ? '#22c55e' : '#cbd5e1'; // Green for 1, Gray for 0
+                svg += drawBezier(p1.x, p1.y, p2.x, p2.y, color);
+            }
+        });
+        
+        if (wiring.active && tempX !== undefined) {
+            svg += drawBezier(wiring.startX, wiring.startY, tempX, tempY, '#3b82f6');
+        }
+        svgWires.innerHTML = svg;
+    }
+
+    function evaluateGraph() {
+        // Recursive / multi-pass evaluation to properly settle combinational logic gates
+        for(let iter=0; iter<state.nodes.length; iter++) {
+            state.nodes.forEach(node => {
+                if(node.type === 'input') return; // Handled by button toggles
+                
+                const inConns = state.connections.filter(c => c.toNode === node.id);
+                
+                if(node.type === 'output' || node.type === 'NOT') {
+                    const conn = inConns.find(c => c.toPort === 'in');
+                    let val = 0;
+                    if(conn) {
+                        const src = state.nodes.find(n => n.id === conn.fromNode);
+                        val = src ? src.value : 0;
+                    }
+                    if(node.type === 'output') node.value = val;
+                    if(node.type === 'NOT') node.value = val === 0 ? 1 : 0;
+                } else { // 2-input gates
+                    const c1 = inConns.find(c => c.toPort === 'in-1');
+                    const c2 = inConns.find(c => c.toPort === 'in-2');
+                    let v1 = 0, v2 = 0;
+                    if(c1) { const src = state.nodes.find(n => n.id === c1.fromNode); v1 = src ? src.value : 0; }
+                    if(c2) { const src = state.nodes.find(n => n.id === c2.fromNode); v2 = src ? src.value : 0; }
+                    
+                    switch(node.type) {
+                        case 'AND': node.value = v1 & v2; break;
+                        case 'OR': node.value = v1 | v2; break;
+                        case 'XOR': node.value = v1 ^ v2; break;
+                        case 'NAND': node.value = !(v1 & v2) ? 1 : 0; break;
+                        case 'NOR': node.value = !(v1 | v2) ? 1 : 0; break;
+                    }
+                }
+            });
+        }
+        renderNodes(); // Triggers a class update on UI to show colors
+    }
+
+    function clearCanvas() {
+        state.nodes = [];
+        state.connections = [];
+        state.nextNodeId = 1;
+        renderNodes();
+    }
+
+    function saveCircuit() {
+        localStorage.setItem("logic_canvas", JSON.stringify(state));
+        alert("Circuit successfully saved!");
+    }
+
+    function loadCircuit() {
+        const savedInfo = localStorage.getItem("logic_canvas");
+        if(savedInfo) {
+            state = JSON.parse(savedInfo);
+            renderNodes();
+            evaluateGraph();
+        } else {
+            alert("No saved circuit found. Make sure to click Save first!");
+        }
+    }
+    
+    // Auto-spawn some initial nodes to show how it works
+    if(state.nodes.length === 0) {
+        addNode('input');
+        addNode('input');
+        addNode('AND');
+        addNode('output');
+        
+        // Offset them automatically for the showcase
+        state.nodes[0].x = 50; state.nodes[0].y = 100;
+        state.nodes[1].x = 50; state.nodes[1].y = 250;
+        state.nodes[2].x = 300; state.nodes[2].y = 150;
+        state.nodes[3].x = 500; state.nodes[3].y = 150;
+        
+        renderNodes();
+        evaluateGraph();
     }
     </script>
 </body>
-</html> 
+</html>
